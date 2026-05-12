@@ -52,4 +52,328 @@ border-radius:999px;
 cursor:pointer;
 margin-bottom:8px;
 transition:0.2s;
+}
+
+.menu button:hover{
+background:#111;
+}
+
+.feed{
+border-right:1px solid #222;
+}
+
+.feed-top{
+padding:20px;
+border-bottom:1px solid #222;
+position:sticky;
+top:0;
+background:rgba(0,0,0,0.8);
+backdrop-filter:blur(10px);
+z-index:100;
+}
+
+.create-post{
+padding:20px;
+border-bottom:1px solid #222;
+}
+
+.create-post textarea{
+width:100%;
+min-height:120px;
+background:none;
+border:none;
+outline:none;
+resize:none;
+color:white;
+font-size:20px;
+}
+
+.post-btn{
+background:#1d9bf0;
+color:white;
+border:none;
+padding:12px 25px;
+border-radius:999px;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+}
+
+.post{
+padding:20px;
+border-bottom:1px solid #222;
+transition:0.2s;
+}
+
+.post:hover{
+background:#080808;
+}
+
+.post-top{
+display:flex;
+gap:12px;
+}
+
+.avatar{
+width:50px;
+height:50px;
+border-radius:50%;
+}
+
+.user-data{
+display:flex;
+flex-direction:column;
+}
+
+.username{
+color:gray;
+}
+
+.post-text{
+margin-top:10px;
+line-height:1.5;
+font-size:17px;
+}
+
+.actions{
+display:flex;
+justify-content:space-between;
+max-width:400px;
+margin-top:15px;
+}
+
+.actions button{
+background:none;
+border:none;
+color:gray;
+cursor:pointer;
+font-size:15px;
+transition:0.2s;
+}
+
+.actions button:hover{
+color:#1d9bf0;
+}
+
+.sidebar-right{
+padding:20px;
+}
+
+.trends{
+background:#16181c;
+border-radius:20px;
+padding:20px;
+}
+
+.trend{
+padding:15px 0;
+border-bottom:1px solid #2f3336;
+}
+
+.trend:last-child{
+border-bottom:none;
+}
+
+.loading{
+padding:30px;
+text-align:center;
+color:gray;
+}
+
+@media(max-width:1000px){
+.app{
+grid-template-columns:80px 1fr;
+}
+
+.sidebar-right{
+display:none;
+}
+}
+
+@media(max-width:700px){
+.app{
+grid-template-columns:1fr;
+}
+
+.sidebar-left{
+display:none;
+}
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<aside class="sidebar-left">
+
+<h1 class="logo">𝕏</h1>
+
+<div class="menu">
+<button>🏠 Home</button>
+<button>🔍 Explorar</button>
+<button>🔔 Notificações</button>
+<button>✉️ Mensagens</button>
+<button>👤 Perfil</button>
+</div>
+
+</aside>
+
+<main class="feed">
+
+<div class="feed-top">
+<h2>Página Inicial</h2>
+</div>
+
+<div class="create-post">
+
+<textarea id="postText" placeholder="O que está acontecendo?"></textarea>
+
+<button class="post-btn" onclick="createPost()">
+Postar
+</button>
+
+</div>
+
+<div id="feed">
+<div class="loading">Carregando feed...</div>
+</div>
+
+</main>
+
+<aside class="sidebar-right">
+
+<div class="trends">
+<h2>Tendências</h2>
+
+<div class="trend">#javascript</div>
+<div class="trend">#tecnologia</div>
+<div class="trend">#games</div>
+<div class="trend">#brasil</div>
+<div class="trend">#html</div>
+
+</div>
+
+</aside>
+
+</div>
+
+<script>
+
+const API_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+
+const currentUser = {
+id:'user_1',
+name:'Murilo',
+username:'@murilo',
+avatar:'https://i.pravatar.cc/150?img=12'
+};
+
+async function createPost(){
+
+const text = document.getElementById('postText').value;
+
+if(!text.trim()){
+alert('Digite algo');
+return;
+}
+
+await fetch(API_URL,{
+method:'POST',
+body:JSON.stringify({
+action:'createPost',
+userId:currentUser.id,
+text:text
+})
+});
+
+document.getElementById('postText').value='';
+
+loadFeed();
+}
+
+async function likePost(postId){
+
+await fetch(API_URL,{
+method:'POST',
+body:JSON.stringify({
+action:'likePost',
+postId:postId,
+userId:currentUser.id
+})
+});
+
+loadFeed();
+}
+
+async function loadFeed(){
+
+const res = await fetch(API_URL+'?action=getFeed');
+
+const data = await res.json();
+
+renderFeed(data.posts);
+}
+
+function renderFeed(posts){
+
+const feed = document.getElementById('feed');
+
+feed.innerHTML='';
+
+posts.reverse().forEach(post=>{
+
+feed.innerHTML += `
+
+<div class="post">
+
+<div class="post-top">
+
+<img class="avatar" src="${post.avatar}">
+
+<div class="user-data">
+<strong>${post.name}</strong>
+<span class="username">${post.username}</span>
+</div>
+
+</div>
+
+<div class="post-text">
+${post.text}
+</div>
+
+<div class="actions">
+
+<button onclick="likePost('${post.id}')">
+❤️ ${post.likes}
+</button>
+
+<button>
+💬 ${post.comments}
+</button>
+
+<button>
+🔁 ${post.reposts}
+</button>
+
+<button>
+📤 Compartilhar
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+}
+
+loadFeed();
+
+setInterval(loadFeed,5000);
+
+</script>
+</body>
 </html>
