@@ -61,9 +61,20 @@ border-right:1px solid #222;
 .feed-top{
 padding:20px;
 border-bottom:1px solid #222;
-position:sticky;
-top:0;
-background:#000;
+}
+
+.profile-box{
+padding:20px;
+border-bottom:1px solid #222;
+display:flex;
+gap:15px;
+align-items:center;
+}
+
+.avatar{
+width:60px;
+height:60px;
+border-radius:50%;
 }
 
 .create-post{
@@ -76,10 +87,10 @@ width:100%;
 min-height:100px;
 background:none;
 border:none;
+outline:none;
+resize:none;
 color:white;
 font-size:20px;
-resize:none;
-outline:none;
 }
 
 .post-btn{
@@ -89,7 +100,7 @@ padding:12px 25px;
 border-radius:999px;
 color:white;
 cursor:pointer;
-font-weight:bold;
+margin-top:10px;
 }
 
 .post{
@@ -106,20 +117,14 @@ display:flex;
 gap:12px;
 }
 
-.avatar{
-width:50px;
-height:50px;
-border-radius:50%;
-}
-
 .username{
 color:gray;
 }
 
 .post-text{
 margin-top:10px;
-font-size:17px;
 line-height:1.5;
+font-size:17px;
 }
 
 .actions{
@@ -144,8 +149,8 @@ border-top:1px solid #222;
 
 .comment{
 padding:10px 0;
-font-size:14px;
 border-bottom:1px solid #111;
+font-size:14px;
 }
 
 .comment-input{
@@ -183,9 +188,20 @@ border-radius:20px;
 margin-bottom:20px;
 }
 
-.trend{
-padding:12px 0;
-border-bottom:1px solid #2f3336;
+.user-card{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:15px;
+}
+
+.follow-btn{
+background:white;
+border:none;
+padding:8px 16px;
+border-radius:999px;
+cursor:pointer;
+font-weight:bold;
 }
 
 .modal{
@@ -223,6 +239,7 @@ border:none;
 color:white;
 border-radius:999px;
 cursor:pointer;
+margin-bottom:10px;
 }
 
 </style>
@@ -233,7 +250,9 @@ cursor:pointer;
 
 <div class="modal-content">
 
-<h2 style="margin-bottom:20px;">Entrar ou Criar Conta</h2>
+<h2 style="margin-bottom:20px;">
+Entrar ou Criar Conta
+</h2>
 
 <input id="name" placeholder="Nome">
 
@@ -241,13 +260,11 @@ cursor:pointer;
 
 <input id="password" type="password" placeholder="Senha">
 
-<input id="avatar" placeholder="URL da foto (opcional)">
+<input id="avatarInput" placeholder="URL da foto">
 
 <button onclick="register()">
 Criar Conta
 </button>
-
-<br><br>
 
 <button onclick="login()">
 Entrar
@@ -264,10 +281,16 @@ Entrar
 <h1 class="logo">𝕏</h1>
 
 <div class="menu">
+
 <button>🏠 Home</button>
 <button>🔍 Explorar</button>
 <button>🔔 Notificações</button>
 <button>✉️ Mensagens</button>
+
+<button onclick="logout()">
+🚪 Sair
+</button>
+
 </div>
 
 </aside>
@@ -275,10 +298,31 @@ Entrar
 <main class="feed">
 
 <div class="feed-top">
+<h2>Página Inicial</h2>
+</div>
 
-<h2 id="currentUserName">
-Página Inicial
-</h2>
+<div class="profile-box">
+
+<img
+id="profileAvatar"
+class="avatar"
+src=""
+>
+
+<div>
+
+<h2 id="profileName"></h2>
+
+<div
+id="profileUsername"
+class="username"
+></div>
+
+<br>
+
+<div id="profileStats"></div>
+
+</div>
 
 </div>
 
@@ -308,11 +352,19 @@ Postar
 
 <h2>Tendências</h2>
 
-<div class="trend">#OpenAI</div>
-<div class="trend">#javascript</div>
-<div class="trend">#IA</div>
-<div class="trend">#Brasil</div>
-<div class="trend">#Tecnologia</div>
+<div>#OpenAI</div>
+<div>#Tecnologia</div>
+<div>#IA</div>
+<div>#JavaScript</div>
+<div>#Brasil</div>
+
+</div>
+
+<div class="box">
+
+<h2>Quem seguir</h2>
+
+<div id="usersList"></div>
 
 </div>
 
@@ -323,7 +375,7 @@ Postar
 <script>
 
 const API_URL =
-'https://script.google.com/macros/s/AKfycbyBvQp0M0yS5IeUFaminsCuozcsOoA8kM4Iomf1ChFy1d0Yeb4DxLmGN_3YftqfxjGT/exec';
+'https://script.google.com/macros/s/AKfycbzauZmzc9FOlyrcRHARfaxyU0FBMTyDtROC078g8knIUvAVumJ1n-k1qYRgiVoBoeMy/exec';
 
 let currentUser = null;
 
@@ -336,25 +388,32 @@ JSON.stringify(user)
 
 currentUser = user;
 
-document.getElementById('authModal')
+document
+.getElementById('authModal')
 .style.display='none';
 
-document.getElementById(
-'currentUserName'
-).innerText =
-user.name + ' • ' + user.username;
+loadProfile();
 
 loadFeed();
+
+loadUsers();
+}
+
+function logout(){
+
+localStorage.removeItem('currentUser');
+
+location.reload();
 }
 
 function checkLogin(){
 
-const user =
+const saved =
 localStorage.getItem('currentUser');
 
-if(user){
+if(saved){
 
-saveUser(JSON.parse(user));
+saveUser(JSON.parse(saved));
 }
 }
 
@@ -370,7 +429,7 @@ const password =
 document.getElementById('password').value;
 
 const avatar =
-document.getElementById('avatar').value;
+document.getElementById('avatarInput').value;
 
 const res = await fetch(API_URL,{
 method:'POST',
@@ -424,12 +483,38 @@ alert(data.message);
 }
 }
 
-async function createPost(){
+async function loadProfile(){
 
-if(!currentUser){
-alert('Faça login');
-return;
+const res = await fetch(
+API_URL +
+'?action=getProfile&userId=' +
+currentUser.id
+);
+
+const profile = await res.json();
+
+document.getElementById(
+'profileAvatar'
+).src = profile.avatar;
+
+document.getElementById(
+'profileName'
+).innerText = profile.name;
+
+document.getElementById(
+'profileUsername'
+).innerText = profile.username;
+
+document.getElementById(
+'profileStats'
+).innerHTML = `
+<strong>${profile.followers}</strong> seguidores •
+<strong>${profile.following}</strong> seguindo •
+<strong>${profile.posts}</strong> posts
+`;
 }
+
+async function createPost(){
 
 const text =
 document.getElementById('postText').value;
@@ -448,14 +533,11 @@ text
 document.getElementById('postText').value='';
 
 loadFeed();
+
+loadProfile();
 }
 
 async function likePost(postId){
-
-if(!currentUser){
-alert('Faça login');
-return;
-}
 
 await fetch(API_URL,{
 method:'POST',
@@ -472,7 +554,9 @@ loadFeed();
 async function commentPost(postId){
 
 const input =
-document.getElementById('comment_'+postId);
+document.getElementById(
+'comment_'+postId
+);
 
 const text = input.value;
 
@@ -493,6 +577,87 @@ input.value='';
 loadFeed();
 }
 
+async function followUser(userId){
+
+await fetch(API_URL,{
+method:'POST',
+body:JSON.stringify({
+action:'followUser',
+followerId:currentUser.id,
+followingId:userId
+})
+});
+
+loadUsers();
+
+loadProfile();
+}
+
+async function loadUsers(){
+
+const res =
+await fetch(API_URL+'?action=getUsers');
+
+const data = await res.json();
+
+const usersList =
+document.getElementById('usersList');
+
+usersList.innerHTML='';
+
+data.users.forEach(user=>{
+
+if(user.id !== currentUser.id){
+
+usersList.innerHTML += `
+
+<div class="user-card">
+
+<div style="display:flex;gap:10px;">
+
+<img
+src="${user.avatar}"
+style="
+width:40px;
+height:40px;
+border-radius:50%;
+"
+>
+
+<div>
+
+<strong>${user.name}</strong>
+
+<br>
+
+<span class="username">
+${user.username}
+</span>
+
+<br>
+
+<small>
+${user.followers} seguidores
+</small>
+
+</div>
+
+</div>
+
+<button
+class="follow-btn"
+onclick="followUser('${user.id}')"
+>
+Seguir
+</button>
+
+</div>
+
+`;
+}
+});
+}
+
 async function loadFeed(){
 
 const res =
@@ -500,17 +665,12 @@ await fetch(API_URL+'?action=getFeed');
 
 const data = await res.json();
 
-renderFeed(data.posts);
-}
-
-function renderFeed(posts){
-
 const feed =
 document.getElementById('feed');
 
 feed.innerHTML='';
 
-posts.reverse().forEach(post=>{
+data.posts.reverse().forEach(post=>{
 
 let commentsHTML='';
 
@@ -521,6 +681,7 @@ commentsHTML += `
 <div class="comment">
 
 <strong>${comment.name}</strong>
+
 <span class="username">
 ${comment.username}
 </span>
@@ -566,7 +727,9 @@ ${post.text}
 
 <div class="actions">
 
-<button onclick="likePost('${post.id}')">
+<button
+onclick="likePost('${post.id}')"
+>
 ❤️ ${post.likes}
 </button>
 
