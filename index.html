@@ -49,9 +49,25 @@ body {
   gap:12px;
   transition:background 0.15s;
   font-family:'Inter',Arial,sans-serif;
+  position:relative;
 }
 .menu button:hover { background:#181818; }
 .menu button.active { font-weight:700; }
+
+/* badge notificação no menu */
+.menu-badge {
+  background:#f4212e;
+  color:white;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  padding:2px 6px;
+  min-width:18px;
+  text-align:center;
+  display:none;
+  margin-left:auto;
+}
+.menu-badge.show { display:inline-block; }
 
 /* ---- Feed ---- */
 .feed { border-right:1px solid #2f3336; }
@@ -198,6 +214,33 @@ body {
 }
 .post-menu-btn:hover { color:white; background:#1d1d1d; }
 
+/* Botão seguir inline no post */
+.inline-follow-btn {
+  background:white;
+  color:#000;
+  border:none;
+  padding:4px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:12px;
+  transition:all 0.15s;
+  flex-shrink:0;
+  font-family:'Inter',Arial,sans-serif;
+  margin-left:4px;
+}
+.inline-follow-btn:hover { background:#e7e9ea; }
+.inline-follow-btn.following {
+  background:transparent;
+  border:1px solid #536471;
+  color:white;
+}
+.inline-follow-btn.following:hover {
+  background:rgba(244,33,46,0.1);
+  border-color:#f4212e;
+  color:#f4212e;
+}
+
 /* ---- Comentários ---- */
 .comments {
   margin-top:12px;
@@ -316,6 +359,99 @@ body {
   color:#f4212e;
 }
 
+/* ---- Seção de Notificações ---- */
+#notificationsSection {
+  display:none;
+  flex-direction:column;
+  border-right:1px solid #2f3336;
+  min-height:100vh;
+}
+#notificationsSection.active { display:flex; }
+
+.notif-top {
+  padding:16px 20px;
+  border-bottom:1px solid #2f3336;
+  position:sticky;
+  top:0;
+  background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(12px);
+  z-index:10;
+}
+.notif-top h2 { font-size:20px; font-weight:700; }
+
+.notif-list { flex:1; overflow-y:auto; }
+
+.notif-item {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 20px;
+  border-bottom:1px solid #1a1a1a;
+  transition:background 0.15s;
+  animation:slideIn 0.25s ease;
+}
+.notif-item:hover { background:#080808; }
+.notif-item.unread { background:#0a1520; }
+.notif-item.unread:hover { background:#0d1a28; }
+
+@keyframes slideIn {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.notif-icon {
+  font-size:20px;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.notif-avatar {
+  width:44px; height:44px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+  background:#222;
+}
+.notif-body { flex:1; min-width:0; }
+.notif-text { font-size:15px; line-height:1.4; }
+.notif-text strong { color:white; }
+.notif-time { color:#71767b; font-size:13px; margin-top:3px; }
+.notif-follow-back {
+  background:white;
+  color:#000;
+  border:none;
+  padding:7px 16px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+  transition:all 0.15s;
+  flex-shrink:0;
+  font-family:'Inter',Arial,sans-serif;
+  white-space:nowrap;
+}
+.notif-follow-back:hover { background:#e7e9ea; }
+.notif-follow-back.following {
+  background:transparent;
+  border:1px solid #536471;
+  color:white;
+}
+.notif-follow-back.following:hover {
+  background:rgba(244,33,46,0.1);
+  border-color:#f4212e;
+  color:#f4212e;
+}
+
+.notif-unread-dot {
+  width:8px; height:8px;
+  border-radius:50%;
+  background:#1d9bf0;
+  flex-shrink:0;
+}
+
 /* ---- Modal Auth ---- */
 .modal {
   position:fixed;
@@ -394,7 +530,7 @@ body {
   display:none;
 }
 
-/* ---- Modal de confirmação de exclusão ---- */
+/* ---- Modal confirmação ---- */
 .confirm-modal {
   position:fixed;
   inset:0;
@@ -453,7 +589,7 @@ body {
 }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* ---- Loading / Empty ---- */
+/* ---- Loading ---- */
 .loading { text-align:center; padding:40px; color:#536471; }
 .spinner {
   width:28px; height:28px;
@@ -468,10 +604,8 @@ body {
 .empty-state h3 { font-size:22px; color:white; margin-bottom:8px; }
 
 /* ============================================================
-   MENSAGENS (DM) — estilo Instagram
+   MENSAGENS (DM)
    ============================================================ */
-
-/* Seção de mensagens — oculta por padrão, fica no lugar do feed */
 #messagesSection {
   display:none;
   flex-direction:row;
@@ -481,7 +615,6 @@ body {
 }
 #messagesSection.active { display:flex; }
 
-/* Lista de conversas */
 #convList {
   width:320px;
   border-right:1px solid #2f3336;
@@ -524,27 +657,12 @@ body {
 .conv-item-preview { color:#71767b; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
 .conv-item-time { font-size:12px; color:#536471; flex-shrink:0; }
 
-/* Unread badge */
-.unread-badge {
-  background:#1d9bf0;
-  color:white;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:700;
-  padding:2px 7px;
-  min-width:18px;
-  text-align:center;
-  flex-shrink:0;
-}
-
-/* Chat aberto */
 #chatArea {
   flex:1;
   display:flex;
   flex-direction:column;
   min-width:0;
 }
-
 .chat-header {
   padding:14px 20px;
   border-bottom:1px solid #2f3336;
@@ -564,7 +682,7 @@ body {
   padding:4px 8px;
   border-radius:999px;
   transition:background 0.15s;
-  display:none; /* só no mobile */
+  display:none;
 }
 .chat-header-back:hover { background:#1a1a1a; }
 .chat-header img {
@@ -586,7 +704,6 @@ body {
   flex-direction:column;
   gap:6px;
 }
-
 .chat-no-conv {
   flex:1;
   display:flex;
@@ -600,15 +717,13 @@ body {
 .chat-no-conv span { font-size:48px; margin-bottom:16px; display:block; }
 .chat-no-conv h3 { font-size:20px; color:white; margin-bottom:8px; }
 
-/* Balões de mensagem */
+/* Balões */
 .msg-bubble-wrap {
   display:flex;
   align-items:flex-end;
   gap:8px;
 }
-.msg-bubble-wrap.mine {
-  flex-direction:row-reverse;
-}
+.msg-bubble-wrap.mine { flex-direction:row-reverse; }
 .msg-bubble {
   max-width:75%;
   padding:10px 14px;
@@ -635,7 +750,6 @@ body {
 }
 .msg-bubble-wrap.theirs .msg-time { text-align:left; }
 
-/* Input de chat */
 .chat-input-area {
   padding:12px 16px;
   border-top:1px solid #2f3336;
@@ -675,17 +789,16 @@ body {
 .chat-send-btn:hover { background:#1a8cd8; }
 .chat-send-btn:disabled { background:#0e4d7a; cursor:not-allowed; }
 
-/* ---- Responsive desktop médio ---- */
+/* ---- Responsive ---- */
 @media(max-width:1100px) {
   .app { grid-template-columns:72px 1fr 0; }
   .sidebar-right { display:none; }
   .sidebar-left { padding:12px 8px; }
-  .menu button span { display:none; }
+  .menu button span.menu-label { display:none; }
   .logo { font-size:30px; text-align:center; }
   #convList { width:260px; }
 }
 
-/* ---- MOBILE ---- */
 @media(max-width:700px) {
   .app {
     grid-template-columns:1fr;
@@ -696,15 +809,13 @@ body {
   .sidebar-left { display:none; }
   .sidebar-right { display:none; }
 
-  /* Feed principal em tela cheia */
   .feed {
     border-right:none;
-    padding-bottom:70px; /* espaço para a navbar */
+    padding-bottom:70px;
     min-height:100vh;
     min-height:100dvh;
   }
 
-  /* Seção de mensagens mobile */
   #messagesSection {
     flex-direction:column;
     height:100vh;
@@ -734,7 +845,12 @@ body {
   #chatArea.open-mobile { display:flex; }
   .chat-header-back { display:block; }
 
-  /* Navbar inferior mobile */
+  #notificationsSection {
+    padding-bottom:70px;
+    min-height:100vh;
+    border-right:none;
+  }
+
   .mobile-nav {
     position:fixed;
     bottom:0;
@@ -766,11 +882,10 @@ body {
   .mobile-nav-btn.active { color:white; }
   .mobile-nav-btn .nav-label { font-size:10px; font-weight:600; }
 
-  /* badge de msg não lida */
-  .msg-nav-badge {
+  .mobile-badge {
     position:absolute;
-    top:8px;
-    right:calc(50% - 18px);
+    top:6px;
+    right:calc(50% - 20px);
     background:#f4212e;
     color:white;
     border-radius:999px;
@@ -781,44 +896,37 @@ body {
     text-align:center;
     display:none;
   }
-  .msg-nav-badge.show { display:block; }
+  .mobile-badge.show { display:block; }
 
   .toast { bottom:80px; }
+  .feed.hidden-mobile { display:none; }
+  #notificationsSection.hidden-mobile { display:none !important; }
+  #messagesSection.hidden-mobile { display:none !important; }
 }
 
-/* Oculta mobile nav em desktop */
 .mobile-nav { display:none; }
 @media(max-width:700px) { .mobile-nav { display:flex; } }
-
-/* Esconde feed em mobile quando mensagens ativas */
-@media(max-width:700px) {
-  .feed.hidden-mobile { display:none; }
-}
 </style>
 </head>
 <body>
 
-<!-- Modal de Autenticação -->
+<!-- Modal Auth -->
 <div id="authModal" class="modal">
   <div class="modal-content">
     <div class="modal-logo">𝕏</div>
     <h2 class="modal-title">Entre no Social X</h2>
     <p class="modal-subtitle">Conecte-se com o mundo.</p>
-
     <div class="modal-tabs">
       <button class="modal-tab active" onclick="switchTab('login')">Entrar</button>
       <button class="modal-tab" onclick="switchTab('register')">Criar Conta</button>
     </div>
-
     <div id="errorMsg" class="error-msg"></div>
-
     <div id="tabLogin">
       <input id="loginUsername" placeholder="@username" autocomplete="username">
       <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password"
              onkeydown="if(event.key==='Enter')login()">
       <button class="primary-btn" id="loginBtn" onclick="login()">Entrar</button>
     </div>
-
     <div id="tabRegister" style="display:none;">
       <input id="regName" placeholder="Nome completo" autocomplete="name">
       <input id="regUsername" placeholder="@username" autocomplete="username">
@@ -845,23 +953,25 @@ body {
 <div id="toast" class="toast"></div>
 
 <div class="app">
+  <!-- Sidebar esquerda -->
   <aside class="sidebar-left">
     <h1 class="logo">𝕏</h1>
     <div class="menu">
-      <button class="active" id="menuHome" onclick="showSection('home')">🏠 <span>Home</span></button>
-      <button>🔍 <span>Explorar</span></button>
-      <button>🔔 <span>Notificações</span></button>
-      <button id="menuMessages" onclick="showSection('messages')">✉️ <span>Mensagens</span></button>
-      <button onclick="logout()">🚪 <span>Sair</span></button>
+      <button class="active" id="menuHome" onclick="showSection('home')">🏠 <span class="menu-label">Home</span></button>
+      <button id="menuNotif" onclick="showSection('notifications')">
+        🔔 <span class="menu-label">Notificações</span>
+        <span class="menu-badge" id="notifBadgeDesktop"></span>
+      </button>
+      <button id="menuMessages" onclick="showSection('messages')">✉️ <span class="menu-label">Mensagens</span></button>
+      <button onclick="logout()">🚪 <span class="menu-label">Sair</span></button>
     </div>
   </aside>
 
-  <!-- Feed principal -->
+  <!-- Feed -->
   <main class="feed" id="feedSection">
     <div class="feed-top">
       <h2 style="font-size:20px;font-weight:700;">Página Inicial</h2>
     </div>
-
     <div class="profile-box">
       <img id="profileAvatar" class="avatar-lg" src="https://i.pravatar.cc/150?img=1" alt="">
       <div style="flex:1;">
@@ -870,7 +980,6 @@ body {
         <div id="profileStats" style="margin-top:8px;color:#71767b;font-size:14px;"></div>
       </div>
     </div>
-
     <div class="create-post">
       <div class="create-post-inner">
         <img id="createAvatar" class="avatar" src="https://i.pravatar.cc/150?img=1" alt="">
@@ -882,35 +991,35 @@ body {
         <button class="post-btn" id="postBtn" onclick="createPost()" disabled>Postar</button>
       </div>
     </div>
-
     <div id="feed">
       <div class="loading"><div class="spinner"></div>Carregando posts...</div>
     </div>
   </main>
 
-  <!-- ============ SEÇÃO DE MENSAGENS ============ -->
-  <section id="messagesSection">
+  <!-- Notificações -->
+  <section id="notificationsSection">
+    <div class="notif-top">
+      <h2>Notificações</h2>
+    </div>
+    <div class="notif-list" id="notifList">
+      <div class="loading"><div class="spinner"></div>Carregando...</div>
+    </div>
+  </section>
 
-    <!-- Lista de conversas -->
+  <!-- Mensagens -->
+  <section id="messagesSection">
     <div id="convList">
-      <div class="conv-header">
-        <h2>Mensagens</h2>
-      </div>
+      <div class="conv-header"><h2>Mensagens</h2></div>
       <div class="conv-scroll" id="convScroll">
         <div class="loading"><div class="spinner"></div>Carregando...</div>
       </div>
     </div>
-
-    <!-- Área do chat -->
     <div id="chatArea">
-      <!-- Estado: nenhuma conversa selecionada (desktop) -->
       <div class="chat-no-conv" id="chatNoConv">
         <span>✉️</span>
         <h3>Suas mensagens</h3>
         <p>Selecione uma conversa ao lado para começar a conversar com quem você segue mutuamente.</p>
       </div>
-
-      <!-- Chat aberto -->
       <div id="chatOpen" style="display:none;flex-direction:column;flex:1;min-height:0;">
         <div class="chat-header">
           <button class="chat-header-back" onclick="closeChatMobile()">←</button>
@@ -928,9 +1037,9 @@ body {
         </div>
       </div>
     </div>
-
   </section>
 
+  <!-- Sidebar direita -->
   <aside class="sidebar-right">
     <div class="box">
       <h2>Tendências para você</h2>
@@ -969,20 +1078,20 @@ body {
   </aside>
 </div>
 
-<!-- Navbar mobile inferior -->
+<!-- Navbar mobile -->
 <nav class="mobile-nav">
   <button class="mobile-nav-btn active" id="mobileHome" onclick="showSection('home')">
-    🏠
-    <span class="nav-label">Home</span>
+    🏠 <span class="nav-label">Home</span>
+  </button>
+  <button class="mobile-nav-btn" id="mobileNotif" onclick="showSection('notifications')">
+    🔔 <span class="nav-label">Notificações</span>
+    <span class="mobile-badge" id="notifBadgeMobile"></span>
   </button>
   <button class="mobile-nav-btn" id="mobileMsgs" onclick="showSection('messages')">
-    ✉️
-    <span class="nav-label">Mensagens</span>
-    <span class="msg-nav-badge" id="msgNavBadge">!</span>
+    ✉️ <span class="nav-label">Mensagens</span>
   </button>
   <button class="mobile-nav-btn" onclick="logout()" style="color:#536471;">
-    🚪
-    <span class="nav-label">Sair</span>
+    🚪 <span class="nav-label">Sair</span>
   </button>
 </nav>
 
@@ -990,50 +1099,70 @@ body {
 // =====================================================
 // CONFIG
 // =====================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbwToT-0jlPKjTaQydwAlprwzO_jL-aOiX3iYpT8rm--Gs-oWHCz--hq7dFC8vG7CITP/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbytaEa-mGXfjOMw5Ywompp7Lr04pbxRwcXb8WtHcccyb1dVwd32oGFpLqw566hYIbhe/exec';
 
-let currentUser   = null;
-let followingSet  = new Set();
-let feedInterval  = null;
-let msgInterval   = null;
-let lastPostIds   = [];
-let lastPostsMap  = {};
-let pendingDeleteId = null;
+let currentUser      = null;
+let followingSet     = new Set();
+let feedInterval     = null;
+let msgInterval      = null;
+let notifInterval    = null;
+let lastPostIds      = [];
+let lastPostsMap     = {};
+let pendingDeleteId  = null;
 
 // DM state
-let currentSection  = 'home';   // 'home' | 'messages'
-let mutualFollows   = [];        // [{id, name, username, avatar}]
+let currentSection   = 'home';
+let mutualFollows    = [];
 let activeConvUserId = null;
-let conversations   = {};        // partnerId -> [{id, text, senderId, createdAt}]
-let lastMsgId       = {};        // partnerId -> lastId (para polling)
+let conversations    = {};
+
+// Notificações
+let lastNotifCount   = 0;
 
 // =====================================================
 // SECTION TOGGLE
 // =====================================================
-
 function showSection(section) {
   currentSection = section;
+
   const feedEl  = document.getElementById('feedSection');
+  const notifEl = document.getElementById('notificationsSection');
   const msgsEl  = document.getElementById('messagesSection');
-  const btnHome = document.getElementById('menuHome');
-  const btnMsgs = document.getElementById('menuMessages');
-  const mHome   = document.getElementById('mobileHome');
-  const mMsgs   = document.getElementById('mobileMsgs');
+
+  // Esconde tudo
+  feedEl.classList.add('hidden-mobile');
+  notifEl.classList.add('hidden-mobile');
+  msgsEl.classList.add('hidden-mobile');
+  notifEl.classList.remove('active');
+  msgsEl.classList.remove('active');
+
+  // Remove active de todos os botões
+  ['menuHome','menuNotif','menuMessages'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  ['mobileHome','mobileNotif','mobileMsgs'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
 
   if (section === 'home') {
     feedEl.classList.remove('hidden-mobile');
-    msgsEl.classList.remove('active');
-    btnHome && btnHome.classList.add('active');
-    btnMsgs && btnMsgs.classList.remove('active');
-    mHome && mHome.classList.add('active');
-    mMsgs && mMsgs.classList.remove('active');
-  } else {
-    feedEl.classList.add('hidden-mobile');
+    document.getElementById('menuHome')?.classList.add('active');
+    document.getElementById('mobileHome')?.classList.add('active');
+
+  } else if (section === 'notifications') {
+    notifEl.classList.remove('hidden-mobile');
+    notifEl.classList.add('active');
+    document.getElementById('menuNotif')?.classList.add('active');
+    document.getElementById('mobileNotif')?.classList.add('active');
+    loadNotifications();
+
+  } else if (section === 'messages') {
+    msgsEl.classList.remove('hidden-mobile');
     msgsEl.classList.add('active');
-    btnHome && btnHome.classList.remove('active');
-    btnMsgs && btnMsgs.classList.add('active');
-    mHome && mHome.classList.remove('active');
-    mMsgs && mMsgs.classList.add('active');
+    document.getElementById('menuMessages')?.classList.add('active');
+    document.getElementById('mobileMsgs')?.classList.add('active');
     if (!mutualFollows.length) loadConversations();
   }
 }
@@ -1041,7 +1170,6 @@ function showSection(section) {
 // =====================================================
 // UTILITÁRIOS
 // =====================================================
-
 function showToast(msg, color = '#1d9bf0') {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1090,7 +1218,6 @@ function isMobile() { return window.innerWidth <= 700; }
 // =====================================================
 // MODAL AUTH
 // =====================================================
-
 function switchTab(tab) {
   clearError();
   document.getElementById('tabLogin').style.display    = tab === 'login'    ? '' : 'none';
@@ -1103,7 +1230,6 @@ function switchTab(tab) {
 // =====================================================
 // LOGIN / REGISTRO / LOGOUT
 // =====================================================
-
 function applyLoggedIn(user) {
   currentUser = user;
   localStorage.setItem('currentUser', JSON.stringify(user));
@@ -1111,10 +1237,11 @@ function applyLoggedIn(user) {
   loadProfile();
   loadUsers();
   lastPostIds = []; lastPostsMap = {};
-  const feedEl = document.getElementById('feed');
-  feedEl.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando posts...</div>';
+  document.getElementById('feed').innerHTML = '<div class="loading"><div class="spinner"></div>Carregando posts...</div>';
   loadFeed();
   startFeedInterval();
+  startNotifInterval();
+  checkNotifBadge();
 }
 
 function checkLogin() {
@@ -1131,6 +1258,7 @@ function checkLogin() {
 function logout() {
   stopFeedInterval();
   stopMsgInterval();
+  stopNotifInterval();
   localStorage.removeItem('currentUser');
   location.reload();
 }
@@ -1151,7 +1279,7 @@ async function login() {
     const data = await res.json();
     if (data.success) { applyLoggedIn(data.user); showToast(`Bem-vindo, ${data.user.name}! 👋`); }
     else showError(data.message || 'Usuário ou senha incorretos.');
-  } catch(e) { showError('Erro de conexão. Verifique a URL do Apps Script.'); }
+  } catch(e) { showError('Erro de conexão.'); }
   finally { btn.disabled = false; btn.textContent = 'Entrar'; }
 }
 
@@ -1175,14 +1303,13 @@ async function register() {
     const data = await res.json();
     if (data.success) { applyLoggedIn(data.user); showToast('Conta criada! Bem-vindo 🎉'); }
     else showError(data.message || 'Erro ao criar conta.');
-  } catch(e) { showError('Erro de conexão. Verifique a URL do Apps Script.'); }
+  } catch(e) { showError('Erro de conexão.'); }
   finally { btn.disabled = false; btn.textContent = 'Criar Conta'; }
 }
 
 // =====================================================
 // PERFIL
 // =====================================================
-
 async function loadProfile() {
   if (!currentUser) return;
   try {
@@ -1206,7 +1333,6 @@ async function loadProfile() {
 // =====================================================
 // CRIAR POST
 // =====================================================
-
 async function createPost() {
   if (!currentUser) return;
   const text = document.getElementById('postText').value.trim();
@@ -1234,7 +1360,6 @@ async function createPost() {
 // =====================================================
 // DELETAR POST
 // =====================================================
-
 function askDeletePost(postId) {
   pendingDeleteId = postId;
   document.getElementById('confirmModal').classList.remove('hidden');
@@ -1273,7 +1398,6 @@ async function confirmDelete() {
 // =====================================================
 // CURTIR
 // =====================================================
-
 async function likePost(postId, btn) {
   if (!currentUser || btn.disabled) return;
   btn.disabled = true;
@@ -1297,7 +1421,6 @@ async function likePost(postId, btn) {
 // =====================================================
 // COMENTAR
 // =====================================================
-
 async function commentPost(postId) {
   if (!currentUser) return;
   const input = document.getElementById('comment_' + postId);
@@ -1348,7 +1471,6 @@ function injectComment(postId, c) {
 // =====================================================
 // SEGUIR / DEIXAR DE SEGUIR
 // =====================================================
-
 async function followUser(userId, btn) {
   if (!currentUser || btn.disabled) return;
   const isFollowing = followingSet.has(userId);
@@ -1374,8 +1496,17 @@ async function followUser(userId, btn) {
         btn.classList.add('following');
         showToast('Você começou a seguir! 👤');
       }
+      // Atualiza todos os botões inline desse usuário no feed
+      document.querySelectorAll(`.inline-follow-btn[data-uid="${userId}"]`).forEach(b => {
+        if (isFollowing) {
+          b.textContent = 'Seguir';
+          b.classList.remove('following');
+        } else {
+          b.textContent = 'Seguindo';
+          b.classList.add('following');
+        }
+      });
       loadProfile();
-      // Atualiza lista de conversas se estiver na aba de mensagens
       if (currentSection === 'messages') loadConversations();
     }
   } catch(e) {}
@@ -1383,9 +1514,8 @@ async function followUser(userId, btn) {
 }
 
 // =====================================================
-// CARREGAR USUÁRIOS
+// CARREGAR USUÁRIOS (sidebar direita)
 // =====================================================
-
 async function loadUsers() {
   if (!currentUser) return;
   try {
@@ -1434,7 +1564,6 @@ async function loadUsers() {
 // =====================================================
 // FEED
 // =====================================================
-
 async function loadFeed() {
   if (!currentUser) return;
   try {
@@ -1496,10 +1625,12 @@ async function loadFeed() {
 }
 
 function buildPostEl(post) {
-  const isOwner = post.userId === currentUser.id;
-  const isLiked = (post.likedBy || []).includes(currentUser.id);
-  const av      = avatarFallback(post.avatar, post.userId || post.id);
-  const myAv    = avatarFallback(currentUser.avatar, currentUser.id);
+  const isOwner  = post.userId === currentUser.id;
+  const isLiked  = (post.likedBy || []).includes(currentUser.id);
+  const isFollow = followingSet.has(post.userId);
+  const av       = avatarFallback(post.avatar, post.userId || post.id);
+  const myAv     = avatarFallback(currentUser.avatar, currentUser.id);
+
   let commentsHTML = '';
   (post.commentsList || []).forEach(c => {
     const cav = avatarFallback(c.avatar, c.userId || '');
@@ -1515,6 +1646,15 @@ function buildPostEl(post) {
         </div>
       </div>`;
   });
+
+  // Botão seguir inline (só aparece se não for o próprio usuário)
+  const followBtnHtml = !isOwner
+    ? `<button class="inline-follow-btn ${isFollow ? 'following' : ''}" data-uid="${post.userId}"
+         onclick="event.stopPropagation();followUserInline('${post.userId}',this)">
+         ${isFollow ? 'Seguindo' : 'Seguir'}
+       </button>`
+    : '';
+
   const wrapper = document.createElement('div');
   wrapper.className = 'post';
   wrapper.id = 'post_' + post.id;
@@ -1526,7 +1666,8 @@ function buildPostEl(post) {
           <div class="post-header-left">
             <span class="post-name">${escapeHtml(post.name)}</span>
             <span class="post-username">${escapeHtml(post.username)}</span>
-            <span class="post-time">${formatTime(post.createdAt)}</span>
+            ${followBtnHtml}
+            <span class="post-time" style="margin-left:4px;">${formatTime(post.createdAt)}</span>
           </div>
           ${isOwner ? `<button class="post-menu-btn" title="Excluir post" onclick="askDeletePost('${post.id}')">···</button>` : ''}
         </div>
@@ -1552,6 +1693,11 @@ function buildPostEl(post) {
   return wrapper;
 }
 
+// Seguir a partir do botão inline no post (sincroniza com followingSet)
+async function followUserInline(userId, btn) {
+  await followUser(userId, btn);
+}
+
 function startFeedInterval() {
   stopFeedInterval();
   feedInterval = setInterval(loadFeed, 20000);
@@ -1561,20 +1707,140 @@ function stopFeedInterval() {
 }
 
 // =====================================================
-// ============  SISTEMA DE MENSAGENS (DM)  ===========
+// NOTIFICAÇÕES
 // =====================================================
+async function loadNotifications() {
+  if (!currentUser) return;
+  const listEl = document.getElementById('notifList');
+  if (listEl.querySelector('.loading') || !listEl.children.length) {
+    listEl.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
+  }
+  try {
+    const res  = await fetch(`${API_URL}?action=getNotifications&userId=${encodeURIComponent(currentUser.id)}`);
+    const data = await res.json();
+    const notifs = data.notifications || [];
 
-// Carrega lista de seguidores mútuos e conversas
+    listEl.innerHTML = '';
+    if (!notifs.length) {
+      listEl.innerHTML = `
+        <div class="empty-state">
+          <div style="font-size:42px;margin-bottom:12px;">🔔</div>
+          <h3>Sem notificações</h3>
+          <p>Quando alguém te seguir, aparecerá aqui.</p>
+        </div>`;
+      updateNotifBadge(0);
+      return;
+    }
+
+    let unread = 0;
+    notifs.forEach(n => {
+      if (!n.read) unread++;
+      const av = avatarFallback(n.avatar, n.fromUserId);
+      const isAlreadyFollowing = followingSet.has(n.fromUserId);
+      const item = document.createElement('div');
+      item.className = 'notif-item' + (!n.read ? ' unread' : '');
+
+      let actionBtn = '';
+      if (n.type === 'follow' && n.fromUserId !== currentUser.id) {
+        actionBtn = `<button class="notif-follow-back ${isAlreadyFollowing ? 'following' : ''}"
+          data-uid="${n.fromUserId}"
+          onclick="followBackFromNotif('${n.fromUserId}', this)">
+          ${isAlreadyFollowing ? 'Seguindo' : 'Seguir de volta'}
+        </button>`;
+      }
+
+      item.innerHTML = `
+        ${!n.read ? '<div class="notif-unread-dot"></div>' : '<div style="width:8px;flex-shrink:0;"></div>'}
+        <div class="notif-icon">${n.type === 'follow' ? '👤' : n.type === 'like' ? '❤️' : '💬'}</div>
+        <img class="notif-avatar" src="${av}" alt="">
+        <div class="notif-body">
+          <div class="notif-text">
+            <strong>${escapeHtml(n.fromName)}</strong>
+            ${n.type === 'follow' ? ' começou a te seguir' : n.type === 'like' ? ' curtiu seu post' : ' comentou no seu post'}
+          </div>
+          <div class="notif-time">${formatTime(n.createdAt)}</div>
+        </div>
+        ${actionBtn}`;
+      listEl.appendChild(item);
+    });
+
+    updateNotifBadge(unread);
+
+    // Marca como lido após visualizar
+    if (unread > 0) {
+      markNotificationsRead();
+    }
+  } catch(e) {
+    listEl.innerHTML = '<div class="empty-state"><h3>Erro ao carregar</h3></div>';
+  }
+}
+
+async function followBackFromNotif(userId, btn) {
+  await followUser(userId, btn);
+  // Atualiza texto do botão se necessário
+  if (followingSet.has(userId)) {
+    btn.textContent = 'Seguindo';
+    btn.classList.add('following');
+  }
+}
+
+async function markNotificationsRead() {
+  if (!currentUser) return;
+  try {
+    await fetch(API_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'markNotificationsRead', userId:currentUser.id })
+    });
+    lastNotifCount = 0;
+    updateNotifBadge(0);
+  } catch(e) {}
+}
+
+async function checkNotifBadge() {
+  if (!currentUser) return;
+  try {
+    const res  = await fetch(`${API_URL}?action=getNotificationCount&userId=${encodeURIComponent(currentUser.id)}`);
+    const data = await res.json();
+    const count = data.count || 0;
+    if (count !== lastNotifCount) {
+      lastNotifCount = count;
+      updateNotifBadge(count);
+    }
+  } catch(e) {}
+}
+
+function updateNotifBadge(count) {
+  const desktop = document.getElementById('notifBadgeDesktop');
+  const mobile  = document.getElementById('notifBadgeMobile');
+  if (count > 0) {
+    const label = count > 99 ? '99+' : String(count);
+    if (desktop) { desktop.textContent = label; desktop.classList.add('show'); }
+    if (mobile)  { mobile.textContent  = label; mobile.classList.add('show'); }
+  } else {
+    if (desktop) { desktop.textContent = ''; desktop.classList.remove('show'); }
+    if (mobile)  { mobile.textContent  = ''; mobile.classList.remove('show'); }
+  }
+}
+
+function startNotifInterval() {
+  stopNotifInterval();
+  notifInterval = setInterval(checkNotifBadge, 15000);
+}
+function stopNotifInterval() {
+  if (notifInterval) { clearInterval(notifInterval); notifInterval = null; }
+}
+
+// =====================================================
+// MENSAGENS (DM)
+// =====================================================
 async function loadConversations() {
   if (!currentUser) return;
   const scrollEl = document.getElementById('convScroll');
   scrollEl.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
-
   try {
     const res  = await fetch(`${API_URL}?action=getMutualFollows&userId=${encodeURIComponent(currentUser.id)}`);
     const data = await res.json();
     mutualFollows = data.users || [];
-
     renderConvList();
     if (!msgInterval) startMsgInterval();
   } catch(e) {
@@ -1585,7 +1851,6 @@ async function loadConversations() {
 function renderConvList() {
   const scrollEl = document.getElementById('convScroll');
   scrollEl.innerHTML = '';
-
   if (!mutualFollows.length) {
     scrollEl.innerHTML = `
       <div style="padding:30px 20px;text-align:center;color:#536471;">
@@ -1594,7 +1859,6 @@ function renderConvList() {
       </div>`;
     return;
   }
-
   mutualFollows.forEach(user => {
     const av   = avatarFallback(user.avatar, user.id);
     const msgs = conversations[user.id] || [];
@@ -1603,7 +1867,6 @@ function renderConvList() {
       ? (last.senderId === currentUser.id ? `Você: ${last.text}` : last.text)
       : 'Diga olá! 👋';
     const timeStr = last ? formatTime(last.createdAt) : '';
-
     const div = document.createElement('div');
     div.className = 'conv-item' + (activeConvUserId === user.id ? ' active-conv' : '');
     div.id = 'conv_' + user.id;
@@ -1619,34 +1882,22 @@ function renderConvList() {
   });
 }
 
-// Abre um chat com o parceiro
 async function openChat(user) {
   activeConvUserId = user.id;
-
-  // Desktop: marca conv ativa
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active-conv'));
   const convItem = document.getElementById('conv_' + user.id);
   if (convItem) convItem.classList.add('active-conv');
-
-  // Mostra área de chat
   document.getElementById('chatNoConv').style.display = 'none';
   const chatOpen = document.getElementById('chatOpen');
   chatOpen.style.display = 'flex';
-
-  // Header
   const av = avatarFallback(user.avatar, user.id);
   document.getElementById('chatPartnerAvatar').src = av;
-  document.getElementById('chatPartnerName').textContent = user.name;
+  document.getElementById('chatPartnerName').textContent     = user.name;
   document.getElementById('chatPartnerUsername').textContent = user.username;
-
-  // Mobile: mostra chatArea como overlay
   if (isMobile()) {
     document.getElementById('convList').classList.add('hidden-mobile');
-    const chatArea = document.getElementById('chatArea');
-    chatArea.classList.add('open-mobile');
+    document.getElementById('chatArea').classList.add('open-mobile');
   }
-
-  // Carrega mensagens
   await fetchMessages(user.id, true);
   document.getElementById('chatInput').focus();
 }
@@ -1661,7 +1912,6 @@ function closeChatMobile() {
   document.getElementById('chatOpen').style.display = 'none';
 }
 
-// Busca mensagens do backend
 async function fetchMessages(partnerId, scrollToBottom = false) {
   if (!currentUser) return;
   try {
@@ -1669,54 +1919,39 @@ async function fetchMessages(partnerId, scrollToBottom = false) {
     const data = await res.json();
     const msgs = data.messages || [];
     conversations[partnerId] = msgs;
-    if (activeConvUserId === partnerId) {
-      renderMessages(msgs, scrollToBottom);
-    }
-    // Atualiza preview na lista
+    if (activeConvUserId === partnerId) renderMessages(msgs, scrollToBottom);
     renderConvList();
   } catch(e) {}
 }
 
-// Renderiza mensagens no chat aberto
 function renderMessages(msgs, scrollToBottom) {
   const container = document.getElementById('chatMessages');
-  const prevScroll = container.scrollTop;
-  const prevHeight = container.scrollHeight;
   container.innerHTML = '';
-
   msgs.forEach(msg => {
     const isMine = msg.senderId === currentUser.id;
     const wrap = document.createElement('div');
     wrap.className = 'msg-bubble-wrap ' + (isMine ? 'mine' : 'theirs');
-    wrap.innerHTML = `
-      <div class="msg-bubble">${escapeHtml(msg.text)}</div>`;
+    wrap.innerHTML = `<div class="msg-bubble">${escapeHtml(msg.text)}</div>`;
     const timeDiv = document.createElement('div');
     timeDiv.className = 'msg-time';
     timeDiv.textContent = formatTime(msg.createdAt);
     wrap.appendChild(timeDiv);
     container.appendChild(wrap);
   });
-
-  if (scrollToBottom || container.scrollHeight - prevHeight > 0) {
-    container.scrollTop = container.scrollHeight;
-  }
+  if (scrollToBottom) container.scrollTop = container.scrollHeight;
 }
 
-// Envia mensagem
 async function sendMessage() {
   if (!currentUser || !activeConvUserId) return;
   const input = document.getElementById('chatInput');
   const text  = input.value.trim();
   if (!text) return;
-
   const btn = document.getElementById('chatSendBtn');
   input.disabled = true;
   btn.disabled   = true;
-
-  // Otimista: injeta imediatamente
   const tempMsg = {
     id: 'temp_' + Date.now(),
-    senderId: currentUser.id,
+    senderId:   currentUser.id,
     receiverId: activeConvUserId,
     text,
     createdAt: new Date().toISOString()
@@ -1725,25 +1960,17 @@ async function sendMessage() {
   conversations[activeConvUserId].push(tempMsg);
   renderMessages(conversations[activeConvUserId], true);
   input.value = '';
-
   try {
     const res  = await fetch(API_URL, {
       method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({
-        action:     'sendMessage',
-        senderId:   currentUser.id,
-        receiverId: activeConvUserId,
-        text
-      })
+      body: JSON.stringify({ action:'sendMessage', senderId:currentUser.id, receiverId:activeConvUserId, text })
     });
     const data = await res.json();
     if (!data.success) {
       showToast('Erro ao enviar.', '#f4212e');
-      // Remove msg otimista
       conversations[activeConvUserId] = conversations[activeConvUserId].filter(m => m.id !== tempMsg.id);
       renderMessages(conversations[activeConvUserId], false);
     } else {
-      // Substitui temp por real
       await fetchMessages(activeConvUserId, false);
     }
   } catch(e) {
@@ -1757,10 +1984,8 @@ async function sendMessage() {
   }
 }
 
-// Polling de mensagens a cada 8s
 async function pollMessages() {
   if (!currentUser || !mutualFollows.length) return;
-  // Busca todas as conversas abertas (parceiros com quem temos seguidores mútuos)
   for (const user of mutualFollows) {
     await fetchMessages(user.id, user.id === activeConvUserId);
   }
