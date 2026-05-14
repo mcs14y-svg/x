@@ -358,7 +358,7 @@ body {
 }
 
 /* ============================================================
-   NOTIFICAÇÕES - CORRIGIDO
+   NOTIFICAÇÕES
    ============================================================ */
 #notificationsSection {
   display:none;
@@ -391,7 +391,6 @@ body {
   border-bottom:1px solid #1a1a1a;
   transition:background 0.15s;
   animation:slideIn 0.25s ease;
-  flex-wrap:wrap;
 }
 .notif-item:hover { background:#080808; }
 .notif-item.unread { background:#0a1520; }
@@ -609,7 +608,7 @@ body {
 .empty-state h3 { font-size:22px; color:white; margin-bottom:8px; }
 
 /* ============================================================
-   MENSAGENS (DM) — CORRIGIDO
+   MENSAGENS (DM) - LAYOUT HORIZONTAL CORRIGIDO
    ============================================================ */
 #messagesSection {
   display:none;
@@ -620,7 +619,7 @@ body {
 }
 #messagesSection.active { display:flex; }
 
-/* Lista de conversas */
+/* Lista de conversas - LADO ESQUERDO */
 #convList {
   width:320px;
   min-width:260px;
@@ -667,7 +666,7 @@ body {
 .conv-item-preview { color:#71767b; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
 .conv-item-time { font-size:12px; color:#536471; flex-shrink:0; }
 
-/* Área do chat — CORRIGIDA */
+/* Área do chat - LADO DIREITO */
 #chatArea {
   flex:1;
   display:flex;
@@ -675,6 +674,7 @@ body {
   height:100%;
   overflow:hidden;
   min-width:0;
+  background:#000;
 }
 
 .chat-header {
@@ -724,49 +724,46 @@ body {
 .chat-no-conv span { font-size:48px; margin-bottom:16px; display:block; }
 .chat-no-conv h3 { font-size:20px; color:white; margin-bottom:8px; }
 
-/* Chat aberto: ocupa todo o #chatArea */
+/* Chat aberto */
 #chatOpen {
-  flex:1;
   display:none;
   flex-direction:column;
   height:100%;
   overflow:hidden;
-  min-height:0;
 }
 #chatOpen.visible { display:flex; }
 
-/* Mensagens — CORRIGIDO: altura fixa com scroll */
+/* Mensagens - ocupa espaço restante */
 .chat-messages {
   flex:1;
   overflow-y:auto;
   padding:16px 20px;
   display:flex;
   flex-direction:column;
-  gap:6px;
-  min-height:0;
-}
-
-/* Balões */
-.msg-bubble-wrap {
-  display:flex;
-  align-items:flex-end;
   gap:8px;
 }
-.msg-bubble-wrap.mine { flex-direction:row-reverse; }
+
+/* Balões de mensagem */
+.msg-row {
+  display:flex;
+  flex-direction:column;
+}
+.msg-row.mine { align-items:flex-end; }
+.msg-row.theirs { align-items:flex-start; }
 .msg-bubble {
-  max-width:72%;
+  max-width:68%;
   padding:10px 14px;
   border-radius:18px;
   font-size:15px;
   line-height:1.5;
   word-break:break-word;
 }
-.msg-bubble-wrap.mine .msg-bubble {
+.msg-row.mine .msg-bubble {
   background:#1d9bf0;
   color:white;
   border-bottom-right-radius:4px;
 }
-.msg-bubble-wrap.theirs .msg-bubble {
+.msg-row.theirs .msg-bubble {
   background:#1e2026;
   color:#e7e9ea;
   border-bottom-left-radius:4px;
@@ -774,12 +771,11 @@ body {
 .msg-time {
   font-size:11px;
   color:#536471;
-  margin-top:4px;
-  text-align:right;
+  margin-top:3px;
+  padding:0 4px;
 }
-.msg-bubble-wrap.theirs .msg-time { text-align:left; }
 
-/* Caixa de input — CORRIGIDO */
+/* Caixa de input */
 .chat-input-area {
   padding:12px 16px;
   border-top:1px solid #2f3336;
@@ -855,13 +851,17 @@ body {
     border-right:none;
   }
 
+  /* Mobile: conversas em tela cheia */
   #messagesSection {
     flex-direction:column;
     height:100vh;
     height:100dvh;
     border-right:none;
     padding-bottom:70px;
+    position:relative;
   }
+  
+  /* Lista de conversas mobile - ocupa tudo */
   #convList {
     width:100%;
     min-width:unset;
@@ -870,17 +870,19 @@ body {
   }
   #convList.hidden-mobile { display:none; }
 
+  /* Chat mobile - overlay por cima */
   #chatArea {
-    position:fixed;
+    position:absolute;
     inset:0;
     bottom:70px;
     z-index:50;
     background:#000;
-    display:none !important;
+    display:flex !important;
     flex-direction:column;
     height:auto;
   }
-  #chatArea.open-mobile { display:flex !important; }
+  #chatArea.chat-hidden { display:none !important; }
+
   .chat-header-back { display:block; }
 
   .mobile-nav {
@@ -1046,7 +1048,7 @@ body {
         <div class="loading"><div class="spinner"></div>Carregando...</div>
       </div>
     </div>
-    <div id="chatArea">
+    <div id="chatArea" class="chat-hidden">
       <div class="chat-no-conv" id="chatNoConv">
         <span>✉️</span>
         <h3>Suas mensagens</h3>
@@ -1131,7 +1133,7 @@ body {
 // =====================================================
 // CONFIG
 // =====================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbxFY_DgEZ_c6HFxc1xDrUkBZyJyIcbL_iLkXsQpalvOsVN_FYMjtvp3kCc1POveYTzB/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbytaEa-mGXfjOMw5Ywompp7Lr04pbxRwcXb8WtHcccyb1dVwd32oGFpLqw566hYIbhe/exec';
 
 let currentUser      = null;
 let followingSet     = new Set();
@@ -1147,8 +1149,6 @@ let mutualFollows    = [];
 let activeConvUserId = null;
 let conversations    = {};
 
-let lastNotifCount   = 0;
-
 // =====================================================
 // SECTION TOGGLE
 // =====================================================
@@ -1158,6 +1158,7 @@ function showSection(section) {
   const feedEl  = document.getElementById('feedSection');
   const notifEl = document.getElementById('notificationsSection');
   const msgsEl  = document.getElementById('messagesSection');
+  const chatArea = document.getElementById('chatArea');
 
   feedEl.classList.add('hidden-mobile');
   notifEl.classList.add('hidden-mobile');
@@ -1187,6 +1188,19 @@ function showSection(section) {
     msgsEl.classList.add('active');
     document.getElementById('menuMessages')?.classList.add('active');
     document.getElementById('mobileMsgs')?.classList.add('active');
+    
+    // Resetar estado do chat ao abrir mensagens
+    if (isMobile()) {
+      closeChatMobile();
+    } else {
+      // Desktop: mostrar placeholder se não tem conversa ativa
+      if (!activeConvUserId) {
+        document.getElementById('chatNoConv').style.display = '';
+        document.getElementById('chatOpen').classList.remove('visible');
+        chatArea.classList.remove('chat-hidden');
+      }
+    }
+    
     if (!mutualFollows.length) loadConversations();
   }
 }
@@ -1265,7 +1279,6 @@ function applyLoggedIn(user) {
   loadFeed();
   startFeedInterval();
   startNotifInterval();
-  checkNotifBadge();
 }
 
 function checkLogin() {
@@ -1520,7 +1533,6 @@ async function followUser(userId, btn) {
         btn.classList.add('following');
         showToast('Você começou a seguir! 👤');
       }
-      // Atualiza todos os botões com mesmo data-uid
       document.querySelectorAll(`.inline-follow-btn[data-uid="${userId}"]`).forEach(b => {
         if (isFollowing) {
           b.textContent = 'Seguir';
@@ -1530,7 +1542,6 @@ async function followUser(userId, btn) {
           b.classList.add('following');
         }
       });
-      // Atualiza botões de notificação com mesmo data-uid
       document.querySelectorAll(`.notif-follow-back[data-uid="${userId}"]`).forEach(b => {
         if (isFollowing) {
           b.textContent = 'Seguir de volta';
@@ -1739,8 +1750,7 @@ function stopFeedInterval() {
 }
 
 // =====================================================
-// NOTIFICAÇÕES — CORRIGIDO
-// Agora mostra quem pediu pra seguir, com botão "Seguir de volta"
+// NOTIFICAÇÕES
 // =====================================================
 async function loadNotifications() {
   if (!currentUser) return;
@@ -1748,7 +1758,6 @@ async function loadNotifications() {
   listEl.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
 
   try {
-    // Busca todos os usuários e quem eu sigo
     const [usersRes, followRes] = await Promise.all([
       fetch(`${API_URL}?action=getUsers`),
       fetch(`${API_URL}?action=getFollowing&userId=${encodeURIComponent(currentUser.id)}`)
@@ -1759,11 +1768,9 @@ async function loadNotifications() {
     const iFollow    = new Set(followData.following || []);
     followingSet     = iFollow;
 
-    // Para cada outro usuário, verifica se ele segue currentUser
     const others = allUsers.filter(u => u.id !== currentUser.id);
     const followerIds = [];
 
-    // Busca os follows de cada usuário para saber quem segue currentUser
     const followChecks = others.map(async (u) => {
       try {
         const r = await fetch(`${API_URL}?action=getFollowing&userId=${encodeURIComponent(u.id)}`);
@@ -1846,7 +1853,6 @@ function renderNotifications(notifs) {
 
 async function followBackFromNotif(userId, btn) {
   await followUser(userId, btn);
-  // O botão já é atualizado dentro de followUser
 }
 
 function updateNotifBadge(count) {
@@ -1862,11 +1868,6 @@ function updateNotifBadge(count) {
   }
 }
 
-async function checkNotifBadge() {
-  if (!currentUser) return;
-  // Já atualiza ao carregar notificações, mantém badge limpo
-}
-
 function startNotifInterval() {
   stopNotifInterval();
   notifInterval = setInterval(() => {
@@ -1878,7 +1879,7 @@ function stopNotifInterval() {
 }
 
 // =====================================================
-// MENSAGENS (DM) — CORRIGIDO
+// MENSAGENS (DM) - CORRIGIDO
 // =====================================================
 async function loadConversations() {
   if (!currentUser) return;
@@ -1931,13 +1932,18 @@ function renderConvList() {
 
 async function openChat(user) {
   activeConvUserId = user.id;
+  
+  // Atualizar classe active na lista
   document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active-conv'));
   const convItem = document.getElementById('conv_' + user.id);
   if (convItem) convItem.classList.add('active-conv');
 
+  // Mostrar chat
   document.getElementById('chatNoConv').style.display = 'none';
-  const chatOpen = document.getElementById('chatOpen');
-  chatOpen.classList.add('visible');
+  document.getElementById('chatOpen').classList.add('visible');
+  
+  const chatArea = document.getElementById('chatArea');
+  chatArea.classList.remove('chat-hidden');
 
   const av = avatarFallback(user.avatar, user.id);
   document.getElementById('chatPartnerAvatar').src = av;
@@ -1946,27 +1952,35 @@ async function openChat(user) {
 
   if (isMobile()) {
     document.getElementById('convList').classList.add('hidden-mobile');
-    document.getElementById('chatArea').classList.add('open-mobile');
   }
 
   await fetchMessages(user.id, true);
-  // Scroll para o final após renderizar
+  
   setTimeout(() => {
     const msgContainer = document.getElementById('chatMessages');
     if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
-  }, 100);
+  }, 150);
+  
   document.getElementById('chatInput').focus();
 }
 
 function closeChatMobile() {
+  activeConvUserId = null;
+  
+  // Resetar UI
+  document.getElementById('chatNoConv').style.display = '';
+  document.getElementById('chatOpen').classList.remove('visible');
+  
+  const chatArea = document.getElementById('chatArea');
+  
   if (isMobile()) {
     document.getElementById('convList').classList.remove('hidden-mobile');
-    document.getElementById('chatArea').classList.remove('open-mobile');
+    chatArea.classList.add('chat-hidden');
+  } else {
+    chatArea.classList.remove('chat-hidden');
   }
-  activeConvUserId = null;
-  document.getElementById('chatNoConv').style.display = '';
-  const chatOpen = document.getElementById('chatOpen');
-  chatOpen.classList.remove('visible');
+  
+  document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active-conv'));
 }
 
 async function fetchMessages(partnerId, scrollToBottom = false) {
@@ -1989,14 +2003,14 @@ function renderMessages(msgs, scrollToBottom) {
   container.innerHTML = '';
   
   if (!msgs.length) {
-    container.innerHTML = '<div style="text-align:center;color:#536471;padding:40px;">Nenhuma mensagem ainda. Diga olá! 👋</div>';
+    container.innerHTML = '<div style="text-align:center;color:#536471;padding:40px;flex:1;display:flex;align-items:center;justify-content:center;">Nenhuma mensagem ainda. Diga olá! 👋</div>';
     return;
   }
 
   msgs.forEach(msg => {
     const isMine = msg.senderId === currentUser.id;
-    const wrap = document.createElement('div');
-    wrap.className = 'msg-bubble-wrap ' + (isMine ? 'mine' : 'theirs');
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + (isMine ? 'mine' : 'theirs');
     
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
@@ -2006,9 +2020,9 @@ function renderMessages(msgs, scrollToBottom) {
     timeDiv.className = 'msg-time';
     timeDiv.textContent = formatTime(msg.createdAt);
     
-    wrap.appendChild(bubble);
-    wrap.appendChild(timeDiv);
-    container.appendChild(wrap);
+    row.appendChild(bubble);
+    row.appendChild(timeDiv);
+    container.appendChild(row);
   });
   
   if (scrollToBottom) {
