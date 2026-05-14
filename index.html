@@ -36,9 +36,6 @@
   --font: 'Inter', Arial, sans-serif;
 }
 
-/* ============================================================
-   MODO TWITTER CLÁSSICO
-   ============================================================ */
 body.twitter-classic {
   --bg: #e7ecef;
   --bg2: #fff;
@@ -81,9 +78,6 @@ body {
   min-height: 100vh;
 }
 
-/* ============================================================
-   SIDEBAR ESQUERDA
-   ============================================================ */
 .sidebar-left {
   padding: 20px;
   border-right: 1px solid var(--border);
@@ -97,7 +91,6 @@ body {
   flex-direction: column;
 }
 
-/* Logo área */
 .logo-wrap {
   margin-bottom: 24px;
   display: flex;
@@ -105,7 +98,6 @@ body {
   height: 44px;
 }
 
-/* SVG pássaro do Twitter (modo clássico) */
 .logo-bird {
   display: none;
   width: 36px;
@@ -114,7 +106,6 @@ body {
 body.twitter-classic .logo-bird { display: block; }
 body.twitter-classic .logo-x { display: none; }
 
-/* 𝕏 (modo X) */
 .logo-x {
   font-size: 30px;
   font-weight: 900;
@@ -164,41 +155,44 @@ body.twitter-classic .menu button.active { color: var(--accent); }
 }
 .menu-badge.show { display: inline-block; }
 
-/* Botão modo */
+/* ====================================================
+   BOTÃO DE TEMA — círculo compacto
+   ==================================================== */
 .theme-toggle-btn {
   margin-top: 20px;
-  padding: 10px 16px;
-  border-radius: 999px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg3);
   color: var(--text);
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
+  justify-content: center;
   transition: all 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+  align-self: flex-start;
 }
-.theme-toggle-btn:hover { background: var(--bg4); border-color: var(--accent); }
+.theme-toggle-btn:hover {
+  background: var(--bg4);
+  border-color: var(--accent);
+  transform: scale(1.08);
+}
 
-/* Ícone no botão de tema */
 .theme-btn-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 .theme-btn-icon svg { width: 22px; height: 22px; }
-.theme-btn-label { font-size: 14px; }
 
-/* ============================================================
-   TWITTER CLASSIC — Estilo mais fiel
-   ============================================================ */
+/* esconde label de texto — só ícone agora */
+.theme-btn-label { display: none !important; }
+
 body.twitter-classic .sidebar-left {
   background: #fff;
   border-right: 1px solid var(--border);
@@ -296,9 +290,6 @@ body.twitter-classic #chatOpen {
   background: #fff;
 }
 
-/* ============================================================
-   FEED
-   ============================================================ */
 .feed { border-right: 1px solid var(--border); background: var(--bg); transition: background 0.3s, border-color 0.3s; }
 .feed-top {
   padding: 16px 20px;
@@ -323,7 +314,6 @@ body.twitter-classic #chatOpen {
 .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #222; }
 .avatar-lg { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #222; }
 
-/* ---- Criar post ---- */
 .create-post {
   padding: 16px 20px;
   border-bottom: 1px solid var(--border);
@@ -370,7 +360,6 @@ body.twitter-classic #chatOpen {
 .post-btn:hover { background: var(--accent-hover); }
 .post-btn:disabled { background: var(--accent-dark); cursor: not-allowed; opacity: 0.6; }
 
-/* ---- Posts ---- */
 .post {
   padding: 16px 20px;
   border-bottom: 1px solid var(--border);
@@ -387,7 +376,6 @@ body.twitter-classic #chatOpen {
 .post-time { color: var(--muted); font-size: 13px; }
 .post-text { margin-top: 10px; line-height: 1.6; font-size: 16px; color: var(--text2); word-break: break-word; }
 
-/* ---- Actions / comentários ---- */
 .actions { display: flex; align-items: center; gap: 2px; max-width: 420px; margin-top: 14px; }
 .action-btn {
   background: none;
@@ -407,7 +395,6 @@ body.twitter-classic #chatOpen {
 .action-btn.liked { color: var(--like); }
 .action-btn.liked:hover { background: rgba(249,24,128,0.1); color: var(--like); }
 
-/* Botão de toggle comentários */
 .toggle-comments-btn {
   background: none;
   border: none;
@@ -457,14 +444,13 @@ body.twitter-classic #chatOpen {
 .inline-follow-btn.following { background: transparent; border: 1px solid var(--muted2); color: var(--text); }
 .inline-follow-btn.following:hover { background: rgba(244,33,46,0.1); border-color: var(--danger); color: var(--danger); }
 
-/* ---- Comentários colapsados ---- */
 .comments {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--border2);
 }
 .comments-list {
-  display: none; /* oculto por padrão */
+  display: none;
   flex-direction: column;
   gap: 0;
 }
@@ -508,9 +494,6 @@ body.twitter-classic #chatOpen {
 }
 .comment-input button:hover { background: var(--accent-hover); }
 
-/* ============================================================
-   SIDEBAR DIREITA
-   ============================================================ */
 .sidebar-right {
   padding: 20px;
   position: sticky;
@@ -539,7 +522,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .trending-tag { font-weight: 700; font-size: 15px; }
 .trending-count { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-/* ---- Quem seguir — pesquisa + scroll ---- */
 .users-search-wrap {
   position: relative;
   margin-bottom: 12px;
@@ -568,9 +550,8 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   pointer-events: none;
 }
 
-/* Lista de usuários com scroll */
 .users-list-wrap {
-  max-height: 340px; /* mostra ~5 usuários, o resto faz scroll */
+  max-height: 340px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -598,9 +579,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .follow-btn.following { background: transparent; border: 1px solid var(--muted2); color: var(--text); }
 .follow-btn.following:hover { background: rgba(244,33,46,0.1); border-color: var(--danger); color: var(--danger); }
 
-/* ============================================================
-   NOTIFICAÇÕES
-   ============================================================ */
 #notificationsSection {
   display: none;
   flex-direction: column;
@@ -671,9 +649,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .notif-follow-back.following:hover { background: rgba(244,33,46,0.1); border-color: var(--danger); color: var(--danger); }
 .notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
-/* ============================================================
-   MODAL AUTH
-   ============================================================ */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.88); display: flex; justify-content: center; align-items: center; z-index: 999; }
 .modal.hidden { display: none; }
 .modal-content {
@@ -715,7 +690,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 14px; display: none;
 }
 
-/* ---- Modal confirmação ---- */
 .confirm-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
 .confirm-modal.hidden { display: none; }
 .confirm-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 320px; max-width: 90vw; text-align: center; }
@@ -728,7 +702,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .btn-delete { background: var(--danger); color: #fff; }
 .btn-delete:hover { filter: brightness(0.85); }
 
-/* ---- Toast ---- */
 .toast {
   position: fixed; bottom: 80px; left: 50%;
   transform: translateX(-50%) translateY(20px);
@@ -738,7 +711,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ---- Loading / Empty ---- */
 .loading { text-align: center; padding: 40px; color: var(--muted2); }
 .spinner {
   width: 28px; height: 28px; border: 3px solid var(--border);
@@ -750,7 +722,7 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .empty-state h3 { font-size: 22px; color: var(--text); margin-bottom: 8px; }
 
 /* ============================================================
-   MENSAGENS
+   MENSAGENS — CORREÇÃO DO BUG DE LAYOUT
    ============================================================ */
 #messagesSection {
   display: none;
@@ -913,6 +885,8 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   flex-direction: column;
   gap: 4px;
   scroll-behavior: smooth;
+  /* garante que o flex container não quebre o layout dos filhos */
+  min-height: 0;
 }
 
 .msg-date-sep {
@@ -920,6 +894,7 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   align-items: center;
   gap: 12px;
   margin: 16px 0 8px;
+  flex-shrink: 0;
 }
 .msg-date-sep span {
   font-size: 12px;
@@ -927,6 +902,7 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   background: var(--bg);
   padding: 0 8px;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 .msg-date-sep::before, .msg-date-sep::after {
   content: '';
@@ -935,18 +911,23 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   background: var(--border2);
 }
 
+/* ---- Linhas de mensagem ---- */
 .msg-row {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   gap: 8px;
-  margin-bottom: 2px;
+  /* CRÍTICO: impede que o flex-item expanda além do container */
+  min-width: 0;
+  width: 100%;
+  flex-shrink: 0;
 }
-.msg-row.mine { flex-direction: row-reverse; }
+.msg-row.mine  { flex-direction: row-reverse; }
 .msg-row.theirs { flex-direction: row; }
 
 .msg-sender-avatar {
-  width: 28px; height: 28px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -955,12 +936,30 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 }
 .msg-sender-avatar.hidden { visibility: hidden; }
 
-.msg-bubble {
+/* ---- Coluna de bubble + timestamp ---- */
+.msg-col {
+  /* limita largura e garante quebra de linha correta */
   max-width: 65%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* alinhamento: minha msg à direita, dele à esquerda */
+}
+.msg-row.mine  .msg-col { align-items: flex-end; }
+.msg-row.theirs .msg-col { align-items: flex-start; }
+
+/* ---- Bubble ---- */
+.msg-bubble {
+  /* CRÍTICO: estas 3 propriedades juntas resolvem o bug */
+  display: inline-block;
+  max-width: 100%;
+  word-wrap: break-word;       /* quebra palavras longas se necessário */
+  overflow-wrap: break-word;   /* alias moderno */
+  word-break: normal;          /* NÃO quebra palavras no meio — respeita espaços */
+  white-space: pre-wrap;       /* mantém espaços, quebra linhas normalmente */
   padding: 10px 14px;
   font-size: 15px;
   line-height: 1.5;
-  word-break: break-word;
 }
 .msg-row.mine .msg-bubble {
   background: var(--bubble-mine);
@@ -979,6 +978,7 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   text-align: center;
   margin-top: 2px;
   padding: 0 4px;
+  white-space: nowrap;
 }
 
 .chat-input-area {
@@ -1057,16 +1057,11 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .chat-send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
 .chat-send-btn:disabled { background: var(--accent-dark); cursor: not-allowed; transform: none; }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
 @media(max-width: 1100px) {
   .app { grid-template-columns: 72px 1fr 0; }
   .sidebar-right { display: none; }
   .sidebar-left { padding: 12px 8px; }
   .menu button span.menu-label { display: none; }
-  .theme-btn-label { display: none; }
-  .theme-toggle-btn { justify-content: center; padding: 10px; gap: 0; }
   #convList { width: 280px; min-width: 240px; }
 }
 
@@ -1154,7 +1149,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 .mobile-nav { display: none; }
 @media(max-width: 700px) { .mobile-nav { display: flex; } }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -1163,7 +1157,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 </head>
 <body>
 
-<!-- Modal Auth -->
 <div id="authModal" class="modal">
   <div class="modal-content">
     <div class="modal-logo">𝕏</div>
@@ -1190,7 +1183,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   </div>
 </div>
 
-<!-- Modal confirmação de exclusão -->
 <div id="confirmModal" class="confirm-modal hidden">
   <div class="confirm-box">
     <h3>Excluir post?</h3>
@@ -1202,18 +1194,14 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast" class="toast"></div>
 
 <div class="app">
-  <!-- Sidebar esquerda -->
   <aside class="sidebar-left">
     <div class="logo-wrap">
-      <!-- Pássaro do Twitter (modo clássico) -->
       <svg class="logo-bird" viewBox="0 0 24 24" fill="#1da1f2" xmlns="http://www.w3.org/2000/svg">
         <path d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z"/>
       </svg>
-      <!-- X (modo escuro padrão) -->
       <span class="logo-x">𝕏</span>
     </div>
 
@@ -1227,21 +1215,20 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
       <button onclick="logout()">🚪 <span class="menu-label">Sair</span></button>
     </div>
 
-    <!-- Botão modo X / Twitter -->
-    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Alternar modo">
-      <!-- Ícone X (visível no modo X, clica para ir para Twitter) -->
+    <!-- Botão redondo de tema -->
+    <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn" title="Alternar tema">
       <span class="theme-btn-icon" id="themeBtnIcon">
-        <!-- SVG pássaro Twitter -->
-        <svg id="iconBird" viewBox="0 0 24 24" fill="#1da1f2" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+        <!-- Pássaro Twitter (visível no modo X → clica para ir ao Twitter) -->
+        <svg id="iconBird" viewBox="0 0 24 24" fill="#1da1f2" xmlns="http://www.w3.org/2000/svg">
           <path d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z"/>
         </svg>
-        <span id="iconX" style="font-size:20px;font-weight:900;font-family:Georgia,serif;color:var(--text);">𝕏</span>
+        <!-- 𝕏 (visível no modo Twitter → clica para voltar ao X) -->
+        <span id="iconX" style="font-size:20px;font-weight:900;font-family:Georgia,serif;color:var(--text);display:none;">𝕏</span>
       </span>
-      <span class="theme-btn-label" id="themeBtnLabel">Modo Twitter</span>
+      <span class="theme-btn-label"></span>
     </button>
   </aside>
 
-  <!-- Feed -->
   <main class="feed" id="feedSection">
     <div class="feed-top">
       <h2 style="font-size:20px;font-weight:700;">Página Inicial</h2>
@@ -1270,7 +1257,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
     </div>
   </main>
 
-  <!-- Notificações -->
   <section id="notificationsSection">
     <div class="notif-top">
       <h2>Notificações</h2>
@@ -1280,7 +1266,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
     </div>
   </section>
 
-  <!-- MENSAGENS -->
   <section id="messagesSection">
     <div id="convList">
       <div class="conv-header">
@@ -1329,7 +1314,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
     </div>
   </section>
 
-  <!-- Sidebar direita (só home) -->
   <aside class="sidebar-right" id="sidebarRight">
     <div class="box">
       <h2>Tendências para você</h2>
@@ -1361,12 +1345,10 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
     </div>
     <div class="box">
       <h2>Quem seguir</h2>
-      <!-- Campo de pesquisa de usuários -->
       <div class="users-search-wrap">
         <span class="users-search-icon">🔍</span>
         <input type="text" id="usersSearchInput" placeholder="Buscar @username..." oninput="filterUsers()">
       </div>
-      <!-- Lista com scroll (mostra 5, resto via scroll) -->
       <div class="users-list-wrap" id="usersList">
         <div class="loading" style="padding:16px 0;">Carregando...</div>
       </div>
@@ -1374,7 +1356,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
   </aside>
 </div>
 
-<!-- Navbar mobile -->
 <nav class="mobile-nav">
   <button class="mobile-nav-btn active" id="mobileHome" onclick="showSection('home')">
     🏠 <span class="nav-label">Home</span>
@@ -1393,9 +1374,6 @@ body.twitter-classic .box h2 { font-size: 19px; font-weight: 800; color: #14171a
 </nav>
 
 <script>
-// =====================================================
-// CONFIG
-// =====================================================
 const API_URL = 'https://script.google.com/macros/s/AKfycbytaEa-mGXfjOMw5Ywompp7Lr04pbxRwcXb8WtHcccyb1dVwd32oGFpLqw566hYIbhe/exec';
 
 let currentUser     = null;
@@ -1413,16 +1391,9 @@ let conversations   = {};
 let notifData       = [];
 let isTwitterMode   = false;
 let allUsersCache   = [];
+let readNotifIds    = new Set();
+let msgNotifCache   = [];
 
-// Notificações já lidas (IDs armazenados no localStorage)
-let readNotifIds = new Set();
-
-// Notificações de mensagem simuladas
-let msgNotifCache = [];
-
-// =====================================================
-// TEMA
-// =====================================================
 function toggleTheme() {
   isTwitterMode = !isTwitterMode;
   applyTheme();
@@ -1430,42 +1401,33 @@ function toggleTheme() {
 }
 
 function applyTheme() {
-  const iconBird  = document.getElementById('iconBird');
-  const iconX     = document.getElementById('iconX');
-  const logoBird  = document.querySelector('.logo-bird');
-  const logoX     = document.querySelector('.logo-x');
-  const btnLabel  = document.getElementById('themeBtnLabel');
+  const iconBird    = document.getElementById('iconBird');
+  const iconX       = document.getElementById('iconX');
   const mobileTheme = document.getElementById('mobileThemeIcon');
 
   if (isTwitterMode) {
     document.body.classList.add('twitter-classic');
-    // Botão mostra 𝕏 (clicar volta para modo X)
-    if (iconBird)  iconBird.style.display  = 'none';
-    if (iconX)     iconX.style.display     = 'inline';
-    if (btnLabel)  btnLabel.textContent    = 'Modo X';
+    // No modo Twitter: mostrar 𝕏 (para voltar ao X)
+    if (iconBird) iconBird.style.display = 'none';
+    if (iconX)    iconX.style.display    = 'inline';
     if (mobileTheme) mobileTheme.textContent = '𝕏';
     document.title = 'Twitter | Página Inicial';
   } else {
     document.body.classList.remove('twitter-classic');
-    // Botão mostra pássaro (clicar vai para modo Twitter)
-    if (iconBird)  iconBird.style.display  = 'block';
-    if (iconX)     iconX.style.display     = 'none';
-    if (btnLabel)  btnLabel.textContent    = 'Modo Twitter';
+    // No modo X: mostrar pássaro (para ir ao Twitter)
+    if (iconBird) iconBird.style.display = 'block';
+    if (iconX)    iconX.style.display    = 'none';
     if (mobileTheme) mobileTheme.textContent = '🐦';
     document.title = 'Social X';
   }
 }
 
-// =====================================================
-// SECTION TOGGLE — sidebar direita só na home
-// =====================================================
 function showSection(section) {
   currentSection = section;
-
-  const feedEl     = document.getElementById('feedSection');
-  const notifEl    = document.getElementById('notificationsSection');
-  const msgsEl     = document.getElementById('messagesSection');
-  const sidebarR   = document.getElementById('sidebarRight');
+  const feedEl   = document.getElementById('feedSection');
+  const notifEl  = document.getElementById('notificationsSection');
+  const msgsEl   = document.getElementById('messagesSection');
+  const sidebarR = document.getElementById('sidebarRight');
 
   feedEl.classList.add('hidden-mobile');
   notifEl.classList.add('hidden-mobile');
@@ -1476,9 +1438,8 @@ function showSection(section) {
   ['menuHome','menuNotif','menuMessages'].forEach(id => document.getElementById(id)?.classList.remove('active'));
   ['mobileHome','mobileNotif','mobileMsgs'].forEach(id => document.getElementById(id)?.classList.remove('active'));
 
-  // Sidebar direita só visível na home
   if (sidebarR) {
-    sidebarR.style.visibility = section === 'home' ? '' : 'hidden';
+    sidebarR.style.visibility   = section === 'home' ? '' : 'hidden';
     sidebarR.style.pointerEvents = section === 'home' ? '' : 'none';
   }
 
@@ -1486,32 +1447,23 @@ function showSection(section) {
     feedEl.classList.remove('hidden-mobile');
     document.getElementById('menuHome')?.classList.add('active');
     document.getElementById('mobileHome')?.classList.add('active');
-
   } else if (section === 'notifications') {
     notifEl.classList.remove('hidden-mobile');
     notifEl.classList.add('active');
     document.getElementById('menuNotif')?.classList.add('active');
     document.getElementById('mobileNotif')?.classList.add('active');
     loadNotifications();
-
   } else if (section === 'messages') {
     msgsEl.classList.remove('hidden-mobile');
     msgsEl.classList.add('active');
     document.getElementById('menuMessages')?.classList.add('active');
     document.getElementById('mobileMsgs')?.classList.add('active');
-
-    if (!mutualFollows.length) {
-      loadConversations();
-    } else {
-      renderConvList();
-    }
+    if (!mutualFollows.length) loadConversations();
+    else renderConvList();
     if (!msgInterval) startMsgInterval();
   }
 }
 
-// =====================================================
-// UTILITÁRIOS
-// =====================================================
 function showToast(msg, color) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1554,9 +1506,9 @@ function formatDateLabel(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
   if (isNaN(d)) return '';
-  const today = new Date();
+  const today     = new Date();
   const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
-  if (d.toDateString() === today.toDateString()) return 'Hoje';
+  if (d.toDateString() === today.toDateString())     return 'Hoje';
   if (d.toDateString() === yesterday.toDateString()) return 'Ontem';
   return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 }
@@ -1570,9 +1522,6 @@ function updateCharCount() {
 }
 function isMobile() { return window.innerWidth <= 700; }
 
-// =====================================================
-// MODAL AUTH
-// =====================================================
 function switchTab(tab) {
   clearError();
   document.getElementById('tabLogin').style.display    = tab==='login'    ? '' : 'none';
@@ -1582,18 +1531,13 @@ function switchTab(tab) {
   });
 }
 
-// =====================================================
-// LOGIN / REGISTRO / LOGOUT
-// =====================================================
 function applyLoggedIn(user) {
   currentUser = user;
   localStorage.setItem('currentUser', JSON.stringify(user));
-  // Carregar notifIds lidas
   try {
     const saved = localStorage.getItem('readNotifIds_' + user.id);
     readNotifIds = saved ? new Set(JSON.parse(saved)) : new Set();
   } catch(e) { readNotifIds = new Set(); }
-
   document.getElementById('authModal').classList.add('hidden');
   loadProfile();
   loadUsers();
@@ -1606,13 +1550,8 @@ function applyLoggedIn(user) {
 
 function checkLogin() {
   const savedTheme = localStorage.getItem('twitterMode');
-  if (savedTheme === '1') {
-    isTwitterMode = true;
-    applyTheme();
-  } else {
-    applyTheme(); // garante ícones corretos no modo padrão
-  }
-
+  isTwitterMode = savedTheme === '1';
+  applyTheme();
   try {
     const saved = localStorage.getItem('currentUser');
     if (saved) {
@@ -1652,10 +1591,10 @@ async function register() {
   const username=document.getElementById('regUsername').value.trim();
   const password=document.getElementById('regPassword').value;
   const avatar=document.getElementById('regAvatar').value.trim();
-  if (!name)           return showError('Informe seu nome.');
-  if (!username)       return showError('Informe um @username.');
+  if (!name)             return showError('Informe seu nome.');
+  if (!username)         return showError('Informe um @username.');
   if (username.length<3) return showError('Username muito curto (mín. 3 caracteres).');
-  if (!password)       return showError('Informe uma senha.');
+  if (!password)         return showError('Informe uma senha.');
   const btn=document.getElementById('registerBtn');
   btn.disabled=true; btn.textContent='Criando...';
   try {
@@ -1667,9 +1606,6 @@ async function register() {
   finally { btn.disabled=false; btn.textContent='Criar Conta'; }
 }
 
-// =====================================================
-// PERFIL
-// =====================================================
 async function loadProfile() {
   if (!currentUser) return;
   try {
@@ -1690,9 +1626,6 @@ async function loadProfile() {
   } catch(e) {}
 }
 
-// =====================================================
-// CRIAR POST
-// =====================================================
 async function createPost() {
   if (!currentUser) return;
   const text = document.getElementById('postText').value.trim();
@@ -1712,9 +1645,6 @@ async function createPost() {
   finally { btn.disabled=false; btn.textContent='Postar'; }
 }
 
-// =====================================================
-// DELETAR POST
-// =====================================================
 function askDeletePost(postId) {
   pendingDeleteId=postId;
   document.getElementById('confirmModal').classList.remove('hidden');
@@ -1741,9 +1671,6 @@ async function confirmDelete() {
   } catch(e) { showToast('Erro de conexão.','#f4212e'); }
 }
 
-// =====================================================
-// CURTIR
-// =====================================================
 async function likePost(postId,btn) {
   if (!currentUser||btn.disabled) return;
   btn.disabled=true;
@@ -1758,9 +1685,6 @@ async function likePost(postId,btn) {
   finally { btn.disabled=false; }
 }
 
-// =====================================================
-// COMENTAR
-// =====================================================
 async function commentPost(postId) {
   if (!currentUser) return;
   const input=document.getElementById('comment_'+postId);
@@ -1777,7 +1701,6 @@ async function commentPost(postId) {
       injectComment(postId,{name:currentUser.name,username:currentUser.username,avatar:currentUser.avatar,text});
       const s=document.querySelector(`#post_${postId} .comment-count`);
       if(s) s.textContent=parseInt(s.textContent||0)+1;
-      // Garante que os comentários estejam visíveis
       const list=document.querySelector(`#post_${postId} .comments-list`);
       if(list) list.classList.add('open');
     } else showToast('Erro ao comentar.','#f4212e');
@@ -1795,7 +1718,6 @@ function injectComment(postId,c) {
   list.appendChild(div);
 }
 
-// Toggle de comentários
 function toggleComments(postId) {
   const list = document.querySelector(`#post_${postId} .comments-list`);
   const btn  = document.querySelector(`#post_${postId} .toggle-comments-btn`);
@@ -1809,9 +1731,6 @@ function toggleComments(postId) {
   }
 }
 
-// =====================================================
-// SEGUIR / DEIXAR DE SEGUIR
-// =====================================================
 async function followUser(userId,btn) {
   if (!currentUser||btn.disabled) return;
   const isFollowing=followingSet.has(userId);
@@ -1837,9 +1756,6 @@ async function followUser(userId,btn) {
   finally { btn.disabled=false; }
 }
 
-// =====================================================
-// USUÁRIOS (sidebar direita)
-// =====================================================
 async function loadUsers() {
   if (!currentUser) return;
   try {
@@ -1889,9 +1805,6 @@ function filterUsers() {
   renderUsersList(filtered);
 }
 
-// =====================================================
-// FEED
-// =====================================================
 async function loadFeed() {
   if (!currentUser) return;
   try {
@@ -1993,9 +1906,6 @@ function buildPostEl(post) {
 function startFeedInterval() { stopFeedInterval(); feedInterval=setInterval(loadFeed,20000); }
 function stopFeedInterval()  { if(feedInterval){clearInterval(feedInterval);feedInterval=null;} }
 
-// =====================================================
-// NOTIFICAÇÕES
-// =====================================================
 function saveReadNotifs() {
   if (!currentUser) return;
   localStorage.setItem('readNotifIds_' + currentUser.id, JSON.stringify([...readNotifIds]));
@@ -2036,10 +1946,8 @@ async function loadNotifications() {
       } catch(e){}
     });
     await Promise.all(followChecks);
-
     followerItems.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
 
-    // Notificações de mensagem: percorrer conversas recentes
     const msgNotifs = [];
     for (const user of mutualFollows) {
       const msgs = conversations[user.id]||[];
@@ -2062,13 +1970,10 @@ async function loadNotifications() {
 
     notifData = [...msgNotifs, ...followerItems];
     notifData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-
-    // Marcar todas como lidas ao abrir a aba
     notifData.forEach(n => readNotifIds.add(n.id));
     saveReadNotifs();
-
     renderNotifications(notifData);
-    updateNotifBadge(0); // zera o badge ao abrir
+    updateNotifBadge(0);
   } catch(e) {
     listEl.innerHTML='<div class="empty-state"><h3>Erro ao carregar notificações</h3></div>';
   }
@@ -2084,10 +1989,8 @@ function renderNotifications(notifs) {
   notifs.forEach(n=>{
     const av=avatarFallback(n.avatar,n.fromUserId);
     const isRead=readNotifIds.has(n.id);
-
     const item=document.createElement('div');
     item.className='notif-item'+(!isRead?' unread':'');
-
     if (n.type === 'follow') {
       const isAlreadyFollowing=followingSet.has(n.fromUserId);
       item.innerHTML=`
@@ -2119,7 +2022,6 @@ function renderNotifications(notifs) {
 }
 
 function countUnreadNotifs() {
-  // Conta notificações ainda não lidas
   return notifData.filter(n => !readNotifIds.has(n.id)).length;
 }
 
@@ -2136,31 +2038,22 @@ function updateNotifBadge(count) {
   }
 }
 
-// Verifica notificações de novos seguidores em background
 async function checkNotifsBadge() {
   if (!currentUser) return;
   try {
-    const [usersRes,followRes] = await Promise.all([
-      fetch(`${API_URL}?action=getUsers`),
-      fetch(`${API_URL}?action=getFollowing&userId=${encodeURIComponent(currentUser.id)}`)
-    ]);
+    const [usersRes] = await Promise.all([fetch(`${API_URL}?action=getUsers`)]);
     const usersData  = await usersRes.json();
     const allUsers   = usersData.users||[];
     const others     = allUsers.filter(u=>u.id!==currentUser.id);
-
     const followerItems = [];
     const followChecks  = others.map(async u=>{
       try {
         const r=await fetch(`${API_URL}?action=getFollowing&userId=${encodeURIComponent(u.id)}`);
         const d=await r.json();
-        if ((d.following||[]).includes(currentUser.id)) {
-          followerItems.push({ id: 'follow_' + u.id });
-        }
+        if ((d.following||[]).includes(currentUser.id)) followerItems.push({ id: 'follow_' + u.id });
       } catch(e){}
     });
     await Promise.all(followChecks);
-
-    // Notificações de mensagem
     const msgNotifIds = [];
     for (const user of mutualFollows) {
       const msgs = conversations[user.id]||[];
@@ -2170,7 +2063,6 @@ async function checkNotifsBadge() {
         msgNotifIds.push({ id: 'msg_' + user.id + '_' + lastMsg.id });
       }
     }
-
     const allIds = [...followerItems, ...msgNotifIds];
     const unread = allIds.filter(n => !readNotifIds.has(n.id)).length;
     updateNotifBadge(unread);
@@ -2186,9 +2078,6 @@ function startNotifInterval() {
 }
 function stopNotifInterval() { if(notifInterval){clearInterval(notifInterval);notifInterval=null;} }
 
-// =====================================================
-// MENSAGENS (DM)
-// =====================================================
 async function loadConversations() {
   if (!currentUser) return;
   const scrollEl=document.getElementById('convScroll');
@@ -2197,7 +2086,6 @@ async function loadConversations() {
     const res  = await fetch(`${API_URL}?action=getMutualFollows&userId=${encodeURIComponent(currentUser.id)}`);
     const data = await res.json();
     mutualFollows = data.users||[];
-
     await Promise.all(mutualFollows.map(u=>fetchMessages(u.id,false,true)));
     renderConvList();
     if (!msgInterval) startMsgInterval();
@@ -2221,7 +2109,6 @@ function renderConvList() {
     scrollEl.innerHTML=`<div style="padding:40px 20px;text-align:center;color:var(--muted);"><div style="font-size:48px;margin-bottom:16px;">👥</div><p style="font-size:15px;line-height:1.6;">Siga alguém que também te segue de volta para começar uma conversa.</p></div>`;
     return;
   }
-
   const sorted = [...mutualFollows].sort((a,b)=>{
     const msgsA = conversations[a.id]||[];
     const msgsB = conversations[b.id]||[];
@@ -2232,7 +2119,6 @@ function renderConvList() {
     if (!lastB) return -1;
     return new Date(lastB.createdAt)-new Date(lastA.createdAt);
   });
-
   sorted.forEach(user=>{
     const av   = avatarFallback(user.avatar,user.id);
     const msgs = conversations[user.id]||[];
@@ -2241,7 +2127,6 @@ function renderConvList() {
       ? (last.senderId===currentUser.id ? `Você: ${last.text}` : last.text)
       : 'Diga olá! 👋';
     const timeStr = last ? formatTime(last.createdAt) : '';
-
     const div=document.createElement('div');
     div.className='conv-item'+(activeConvUser&&activeConvUser.id===user.id?' active-conv':'');
     div.id='conv_'+user.id;
@@ -2261,30 +2146,22 @@ function renderConvList() {
 
 async function openChat(user) {
   activeConvUser = user;
-
   document.querySelectorAll('.conv-item').forEach(el=>el.classList.remove('active-conv'));
   const ci=document.getElementById('conv_'+user.id);
   if(ci) ci.classList.add('active-conv');
-
   document.getElementById('chatNoConv').style.display='none';
   document.getElementById('chatOpen').classList.add('visible');
-
   if (!isMobile()) {
-    const convList = document.getElementById('convList');
-    convList.style.display = 'none';
-    const chatArea = document.getElementById('chatArea');
-    chatArea.style.flex = '1';
+    document.getElementById('convList').style.display = 'none';
+    document.getElementById('chatArea').style.flex = '1';
   }
-
   if (isMobile()) {
     document.getElementById('convList').classList.add('hidden-mobile');
   }
-
   const av=avatarFallback(user.avatar,user.id);
   document.getElementById('chatPartnerAvatar').src=av;
   document.getElementById('chatPartnerName').textContent=user.name;
   document.getElementById('chatPartnerUsername').textContent=user.username;
-
   await fetchMessages(user.id,true,false);
   document.getElementById('chatInput').focus();
 }
@@ -2293,16 +2170,13 @@ function closeChatMobile() {
   activeConvUser=null;
   document.getElementById('chatNoConv').style.display='';
   document.getElementById('chatOpen').classList.remove('visible');
-
   if (!isMobile()) {
     document.getElementById('convList').style.display='';
     document.getElementById('chatArea').style.flex='';
   }
-
   if (isMobile()) {
     document.getElementById('convList').classList.remove('hidden-mobile');
   }
-
   document.querySelectorAll('.conv-item').forEach(el=>el.classList.remove('active-conv'));
 }
 
@@ -2333,10 +2207,10 @@ function renderMessages(msgs, scrollToBottom) {
   let lastDateLabel='';
 
   msgs.forEach((msg,i)=>{
-    const isMine   = msg.senderId===currentUser.id;
-    const side     = isMine ? 'mine' : 'theirs';
-    const prevMsg  = i>0 ? msgs[i-1] : null;
-    const nextMsg  = i<msgs.length-1 ? msgs[i+1] : null;
+    const isMine  = msg.senderId===currentUser.id;
+    const side    = isMine ? 'mine' : 'theirs';
+    const prevMsg = i>0 ? msgs[i-1] : null;
+    const nextMsg = i<msgs.length-1 ? msgs[i+1] : null;
 
     const dateLabel = formatDateLabel(msg.createdAt);
     if (dateLabel !== lastDateLabel) {
@@ -2349,12 +2223,13 @@ function renderMessages(msgs, scrollToBottom) {
 
     const samePrev = prevMsg && prevMsg.senderId===msg.senderId;
     const sameNext = nextMsg && nextMsg.senderId===msg.senderId;
-
     const partnerAv = activeConvUser ? avatarFallback(activeConvUser.avatar,activeConvUser.id) : '';
 
+    /* ---- row ---- */
     const row=document.createElement('div');
     row.className=`msg-row ${side}`;
 
+    /* avatar do parceiro (lado esquerdo, mensagens dele) */
     if (!isMine) {
       const avatarEl=document.createElement('img');
       avatarEl.className='msg-sender-avatar'+(sameNext?' hidden':'');
@@ -2363,8 +2238,9 @@ function renderMessages(msgs, scrollToBottom) {
       row.appendChild(avatarEl);
     }
 
+    /* coluna: bubble + timestamp — usa a classe CSS .msg-col */
     const col=document.createElement('div');
-    col.style.cssText='display:flex;flex-direction:column;max-width:65%;';
+    col.className='msg-col';
 
     const bubble=document.createElement('div');
     bubble.className='msg-bubble';
@@ -2392,10 +2268,8 @@ async function sendMessage() {
   const input=document.getElementById('chatInput');
   const text =input.value.trim();
   if (!text) return;
-
   const btn=document.getElementById('chatSendBtn');
   input.disabled=true; btn.disabled=true;
-
   const tempMsg={
     id:'temp_'+Date.now(),
     senderId:currentUser.id,
@@ -2407,7 +2281,6 @@ async function sendMessage() {
   conversations[activeConvUser.id].push(tempMsg);
   renderMessages(conversations[activeConvUser.id],true);
   input.value='';
-
   try {
     const res  = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'sendMessage',senderId:currentUser.id,receiverId:activeConvUser.id,text})});
     const data = await res.json();
@@ -2434,19 +2307,14 @@ async function pollMessages() {
     await fetchMessages(user.id, user.id===activeConvUser?.id, true);
   }
   renderConvList();
-  // Atualiza badge de notificações em background
   if (currentSection !== 'notifications') checkNotifsBadge();
 }
 
 function startMsgInterval() { stopMsgInterval(); msgInterval=setInterval(pollMessages,8000); }
 function stopMsgInterval()  { if(msgInterval){clearInterval(msgInterval);msgInterval=null;} }
 
-// =====================================================
-// INIT
-// =====================================================
 checkLogin();
 
-// Botão voltar sempre visível
 const backBtn = document.querySelector('.chat-header-back');
 if (backBtn) backBtn.style.display = 'flex';
 
