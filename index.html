@@ -13,6 +13,7 @@ body {
   background:#000;
   color:white;
   font-family:'Inter',Arial,sans-serif;
+  overflow-x:hidden;
 }
 
 .app {
@@ -357,13 +358,15 @@ body {
 }
 
 /* ============================================================
-   NOTIFICAÇÕES
+   NOTIFICAÇÕES - CORRIGIDO
    ============================================================ */
 #notificationsSection {
   display:none;
   flex-direction:column;
   border-right:1px solid #2f3336;
   min-height:100vh;
+  height:100vh;
+  overflow-y:auto;
 }
 #notificationsSection.active { display:flex; }
 
@@ -388,6 +391,7 @@ body {
   border-bottom:1px solid #1a1a1a;
   transition:background 0.15s;
   animation:slideIn 0.25s ease;
+  flex-wrap:wrap;
 }
 .notif-item:hover { background:#080808; }
 .notif-item.unread { background:#0a1520; }
@@ -432,6 +436,7 @@ body {
   flex-shrink:0;
   font-family:'Inter',Arial,sans-serif;
   white-space:nowrap;
+  margin-left:auto;
 }
 .notif-follow-back:hover { background:#e7e9ea; }
 .notif-follow-back.following {
@@ -604,15 +609,13 @@ body {
 .empty-state h3 { font-size:22px; color:white; margin-bottom:8px; }
 
 /* ============================================================
-   MENSAGENS (DM) — layout completamente reescrito
+   MENSAGENS (DM) — CORRIGIDO
    ============================================================ */
 #messagesSection {
   display:none;
   border-right:1px solid #2f3336;
-  /* Ocupa a célula do grid sem transbordar */
   height:100vh;
   overflow:hidden;
-  /* Flex horizontal: lista de convs + área do chat */
   flex-direction:row;
 }
 #messagesSection.active { display:flex; }
@@ -664,7 +667,7 @@ body {
 .conv-item-preview { color:#71767b; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
 .conv-item-time { font-size:12px; color:#536471; flex-shrink:0; }
 
-/* Área do chat — ocupa o restante */
+/* Área do chat — CORRIGIDA */
 #chatArea {
   flex:1;
   display:flex;
@@ -703,7 +706,7 @@ body {
   flex-shrink:0;
   background:#222;
 }
-.chat-header-info {}
+.chat-header-info { min-width:0; }
 .chat-header-name { font-weight:700; font-size:16px; }
 .chat-header-username { color:#71767b; font-size:13px; }
 
@@ -732,7 +735,7 @@ body {
 }
 #chatOpen.visible { display:flex; }
 
-/* Mensagens — cresce, rola */
+/* Mensagens — CORRIGIDO: altura fixa com scroll */
 .chat-messages {
   flex:1;
   overflow-y:auto;
@@ -776,7 +779,7 @@ body {
 }
 .msg-bubble-wrap.theirs .msg-time { text-align:left; }
 
-/* Caixa de input — sempre visível na base */
+/* Caixa de input — CORRIGIDO */
 .chat-input-area {
   padding:12px 16px;
   border-top:1px solid #2f3336;
@@ -845,7 +848,13 @@ body {
     min-height:100dvh;
   }
 
-  /* Mensagens mobile: lista ocupa a tela toda, chat abre por cima */
+  #notificationsSection {
+    padding-bottom:70px;
+    min-height:100vh;
+    min-height:100dvh;
+    border-right:none;
+  }
+
   #messagesSection {
     flex-direction:column;
     height:100vh;
@@ -861,7 +870,6 @@ body {
   }
   #convList.hidden-mobile { display:none; }
 
-  /* Chat mobile: cobre a tela inteira como overlay */
   #chatArea {
     position:fixed;
     inset:0;
@@ -874,12 +882,6 @@ body {
   }
   #chatArea.open-mobile { display:flex !important; }
   .chat-header-back { display:block; }
-
-  #notificationsSection {
-    padding-bottom:70px;
-    min-height:100vh;
-    border-right:none;
-  }
 
   .mobile-nav {
     position:fixed;
@@ -1129,7 +1131,7 @@ body {
 // =====================================================
 // CONFIG
 // =====================================================
-const API_URL = 'https://script.google.com/macros/s/AKfycbytaEa-mGXfjOMw5Ywompp7Lr04pbxRwcXb8WtHcccyb1dVwd32oGFpLqw566hYIbhe/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxFY_DgEZ_c6HFxc1xDrUkBZyJyIcbL_iLkXsQpalvOsVN_FYMjtvp3kCc1POveYTzB/exec';
 
 let currentUser      = null;
 let followingSet     = new Set();
@@ -1518,9 +1520,20 @@ async function followUser(userId, btn) {
         btn.classList.add('following');
         showToast('Você começou a seguir! 👤');
       }
+      // Atualiza todos os botões com mesmo data-uid
       document.querySelectorAll(`.inline-follow-btn[data-uid="${userId}"]`).forEach(b => {
         if (isFollowing) {
           b.textContent = 'Seguir';
+          b.classList.remove('following');
+        } else {
+          b.textContent = 'Seguindo';
+          b.classList.add('following');
+        }
+      });
+      // Atualiza botões de notificação com mesmo data-uid
+      document.querySelectorAll(`.notif-follow-back[data-uid="${userId}"]`).forEach(b => {
+        if (isFollowing) {
+          b.textContent = 'Seguir de volta';
           b.classList.remove('following');
         } else {
           b.textContent = 'Seguindo';
@@ -1726,61 +1739,32 @@ function stopFeedInterval() {
 }
 
 // =====================================================
-// NOTIFICAÇÕES — constrói a partir de follows recebidos
-// (fallback local, caso o backend não tenha getNotifications)
+// NOTIFICAÇÕES — CORRIGIDO
+// Agora mostra quem pediu pra seguir, com botão "Seguir de volta"
 // =====================================================
 async function loadNotifications() {
   if (!currentUser) return;
   const listEl = document.getElementById('notifList');
   listEl.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando...</div>';
 
-  // 1) Tenta endpoint dedicado
   try {
-    const res  = await fetch(`${API_URL}?action=getNotifications&userId=${encodeURIComponent(currentUser.id)}`);
-    const data = await res.json();
-
-    // Se o backend retornou notificações reais, usa-as
-    if (data.notifications && Array.isArray(data.notifications)) {
-      renderNotifications(data.notifications);
-      return;
-    }
-  } catch(e) {}
-
-  // 2) Fallback: reconstrói notificações a partir dos seguidores
-  try {
+    // Busca todos os usuários e quem eu sigo
     const [usersRes, followRes] = await Promise.all([
       fetch(`${API_URL}?action=getUsers`),
       fetch(`${API_URL}?action=getFollowing&userId=${encodeURIComponent(currentUser.id)}`)
     ]);
     const usersData  = await usersRes.json();
     const followData = await followRes.json();
-
     const allUsers   = usersData.users   || [];
     const iFollow    = new Set(followData.following || []);
+    followingSet     = iFollow;
 
-    // Quem me segue: para saber quem me segue, verificamos
-    // todos os usuários e montamos notificações de "follow"
-    // Com base nos dados disponíveis pelo getFollowing de cada um
-    // (queremos quem segue currentUser)
-    // Usamos getFollowers via getProfile approach —
-    // mas o backend não tem esse endpoint, então usamos getMutualFollows
-    // + getUsers para inferir: qualquer usuário que não seja eu pode ter me seguido.
-    // A forma mais confiável sem endpoint extra: verificamos via getMutualFollows
-    // e também buscamos todos os follows via getFollowing de cada usuário (caro).
-    // Solução prática: mostrar "X começou a te seguir" para quem me segue.
-    // Para isso, consultamos o getProfile do currentUser e comparamos com
-    // getFollowing de outros usuários seria n requisições.
-    // Melhor abordagem sem novo endpoint: usar a lista de usuários e checar
-    // quem segue o currentUser via getFollowersOf (não existe) — então
-    // vamos construir as notificações só com base em follows mútuos e não-mútuos
-    // usando a aba FOLLOWS indiretamente via getFollowing de todos.
-    // SIMPLICAÇÃO: mostramos seguidores baseado no que temos.
-
-    // Vamos chamar getFollowing para cada outro usuário (máx 10 usuários)
-    const others = allUsers.filter(u => u.id !== currentUser.id).slice(0, 10);
+    // Para cada outro usuário, verifica se ele segue currentUser
+    const others = allUsers.filter(u => u.id !== currentUser.id);
     const followerIds = [];
 
-    await Promise.all(others.map(async (u) => {
+    // Busca os follows de cada usuário para saber quem segue currentUser
+    const followChecks = others.map(async (u) => {
       try {
         const r = await fetch(`${API_URL}?action=getFollowing&userId=${encodeURIComponent(u.id)}`);
         const d = await r.json();
@@ -1788,9 +1772,9 @@ async function loadNotifications() {
           followerIds.push(u.id);
         }
       } catch(e) {}
-    }));
+    });
 
-    followingSet = iFollow;
+    await Promise.all(followChecks);
 
     const notifs = followerIds.map(uid => {
       const u = allUsers.find(x => x.id === uid);
@@ -1799,9 +1783,10 @@ async function loadNotifications() {
         type:       'follow',
         fromUserId: u.id,
         fromName:   u.name,
+        fromUsername: u.username,
         avatar:     u.avatar,
         read:       false,
-        createdAt:  null
+        createdAt:  new Date().toISOString()
       };
     }).filter(Boolean);
 
@@ -1836,80 +1821,32 @@ function renderNotifications(notifs) {
     const item = document.createElement('div');
     item.className = 'notif-item' + (!n.read ? ' unread' : '');
 
-    // Botão seguir de volta — para qualquer notificação de follow de outro usuário
-    let actionBtn = '';
-    if (n.type === 'follow' && n.fromUserId !== currentUser.id) {
-      actionBtn = `<button class="notif-follow-back ${isAlreadyFollowing ? 'following' : ''}"
+    item.innerHTML = `
+      ${!n.read ? '<div class="notif-unread-dot"></div>' : '<div style="width:8px;flex-shrink:0;"></div>'}
+      <div class="notif-icon">👤</div>
+      <img class="notif-avatar" src="${av}" alt="">
+      <div class="notif-body">
+        <div class="notif-text">
+          <strong>${escapeHtml(n.fromName)}</strong>
+          <span style="color:#71767b;"> @${escapeHtml(n.fromUsername || '')}</span>
+          começou a te seguir
+        </div>
+        <div class="notif-time">${formatTime(n.createdAt)}</div>
+      </div>
+      <button class="notif-follow-back ${isAlreadyFollowing ? 'following' : ''}"
         data-uid="${n.fromUserId}"
         onclick="followBackFromNotif('${n.fromUserId}', this)">
         ${isAlreadyFollowing ? 'Seguindo' : 'Seguir de volta'}
       </button>`;
-    }
-
-    const typeIcon  = n.type === 'follow' ? '👤' : n.type === 'like' ? '❤️' : '💬';
-    const typeLabel = n.type === 'follow'
-      ? ' começou a te seguir'
-      : n.type === 'like'
-        ? ' curtiu seu post'
-        : ' comentou no seu post';
-
-    item.innerHTML = `
-      ${!n.read ? '<div class="notif-unread-dot"></div>' : '<div style="width:8px;flex-shrink:0;"></div>'}
-      <div class="notif-icon">${typeIcon}</div>
-      <img class="notif-avatar" src="${av}" alt="">
-      <div class="notif-body">
-        <div class="notif-text">
-          <strong>${escapeHtml(n.fromName)}</strong>${typeLabel}
-        </div>
-        <div class="notif-time">${formatTime(n.createdAt)}</div>
-      </div>
-      ${actionBtn}`;
     listEl.appendChild(item);
   });
 
   updateNotifBadge(unread);
-
-  if (unread > 0) markNotificationsRead();
 }
 
 async function followBackFromNotif(userId, btn) {
   await followUser(userId, btn);
-  if (followingSet.has(userId)) {
-    btn.textContent = 'Seguindo';
-    btn.classList.add('following');
-  } else {
-    btn.textContent = 'Seguir de volta';
-    btn.classList.remove('following');
-  }
-}
-
-async function markNotificationsRead() {
-  if (!currentUser) return;
-  try {
-    await fetch(API_URL, {
-      method:'POST', headers:{'Content-Type':'text/plain'},
-      body: JSON.stringify({ action:'markNotificationsRead', userId:currentUser.id })
-    });
-    lastNotifCount = 0;
-    updateNotifBadge(0);
-  } catch(e) {}
-}
-
-async function checkNotifBadge() {
-  if (!currentUser) return;
-  try {
-    // Tenta endpoint dedicado
-    const res  = await fetch(`${API_URL}?action=getNotificationCount&userId=${encodeURIComponent(currentUser.id)}`);
-    const data = await res.json();
-    if (typeof data.count === 'number') {
-      if (data.count !== lastNotifCount) {
-        lastNotifCount = data.count;
-        updateNotifBadge(data.count);
-      }
-      return;
-    }
-  } catch(e) {}
-  // Sem endpoint: sem badge automático (só atualiza ao abrir notificações)
+  // O botão já é atualizado dentro de followUser
 }
 
 function updateNotifBadge(count) {
@@ -1925,16 +1862,23 @@ function updateNotifBadge(count) {
   }
 }
 
+async function checkNotifBadge() {
+  if (!currentUser) return;
+  // Já atualiza ao carregar notificações, mantém badge limpo
+}
+
 function startNotifInterval() {
   stopNotifInterval();
-  notifInterval = setInterval(checkNotifBadge, 15000);
+  notifInterval = setInterval(() => {
+    if (currentSection === 'notifications') loadNotifications();
+  }, 20000);
 }
 function stopNotifInterval() {
   if (notifInterval) { clearInterval(notifInterval); notifInterval = null; }
 }
 
 // =====================================================
-// MENSAGENS (DM)
+// MENSAGENS (DM) — CORRIGIDO
 // =====================================================
 async function loadConversations() {
   if (!currentUser) return;
@@ -1991,7 +1935,6 @@ async function openChat(user) {
   const convItem = document.getElementById('conv_' + user.id);
   if (convItem) convItem.classList.add('active-conv');
 
-  // Esconde o placeholder, mostra o chat
   document.getElementById('chatNoConv').style.display = 'none';
   const chatOpen = document.getElementById('chatOpen');
   chatOpen.classList.add('visible');
@@ -2007,6 +1950,11 @@ async function openChat(user) {
   }
 
   await fetchMessages(user.id, true);
+  // Scroll para o final após renderizar
+  setTimeout(() => {
+    const msgContainer = document.getElementById('chatMessages');
+    if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
+  }, 100);
   document.getElementById('chatInput').focus();
 }
 
@@ -2028,26 +1976,44 @@ async function fetchMessages(partnerId, scrollToBottom = false) {
     const data = await res.json();
     const msgs = data.messages || [];
     conversations[partnerId] = msgs;
-    if (activeConvUserId === partnerId) renderMessages(msgs, scrollToBottom);
+    if (activeConvUserId === partnerId) {
+      renderMessages(msgs, scrollToBottom);
+    }
     renderConvList();
   } catch(e) {}
 }
 
 function renderMessages(msgs, scrollToBottom) {
   const container = document.getElementById('chatMessages');
+  if (!container) return;
   container.innerHTML = '';
+  
+  if (!msgs.length) {
+    container.innerHTML = '<div style="text-align:center;color:#536471;padding:40px;">Nenhuma mensagem ainda. Diga olá! 👋</div>';
+    return;
+  }
+
   msgs.forEach(msg => {
     const isMine = msg.senderId === currentUser.id;
     const wrap = document.createElement('div');
     wrap.className = 'msg-bubble-wrap ' + (isMine ? 'mine' : 'theirs');
-    wrap.innerHTML = `<div class="msg-bubble">${escapeHtml(msg.text)}</div>`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = msg.text;
+    
     const timeDiv = document.createElement('div');
     timeDiv.className = 'msg-time';
     timeDiv.textContent = formatTime(msg.createdAt);
+    
+    wrap.appendChild(bubble);
     wrap.appendChild(timeDiv);
     container.appendChild(wrap);
   });
-  if (scrollToBottom) container.scrollTop = container.scrollHeight;
+  
+  if (scrollToBottom) {
+    container.scrollTop = container.scrollHeight;
+  }
 }
 
 async function sendMessage() {
@@ -2058,6 +2024,7 @@ async function sendMessage() {
   const btn = document.getElementById('chatSendBtn');
   input.disabled = true;
   btn.disabled   = true;
+
   const tempMsg = {
     id: 'temp_' + Date.now(),
     senderId:   currentUser.id,
@@ -2069,6 +2036,7 @@ async function sendMessage() {
   conversations[activeConvUserId].push(tempMsg);
   renderMessages(conversations[activeConvUserId], true);
   input.value = '';
+
   try {
     const res  = await fetch(API_URL, {
       method:'POST', headers:{'Content-Type':'text/plain'},
@@ -2076,7 +2044,7 @@ async function sendMessage() {
     });
     const data = await res.json();
     if (!data.success) {
-      showToast('Erro ao enviar.', '#f4212e');
+      showToast(data.message || 'Erro ao enviar.', '#f4212e');
       conversations[activeConvUserId] = conversations[activeConvUserId].filter(m => m.id !== tempMsg.id);
       renderMessages(conversations[activeConvUserId], false);
     } else {
